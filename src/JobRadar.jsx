@@ -59,6 +59,117 @@ const SHUBHAM_SKILLS = [
   "Seller Partner Management","Data Analysis","Go-To-Market","SaaS","Python","Fintech"
 ];
 
+// ── Salary estimation tables (mirrors backend scorer.py) ──────────
+const TIER1_COS = ["google","microsoft","amazon","meta","apple","stripe","uber","linkedin","salesforce","adobe","atlassian","paypal","oracle","sap","servicenow","workday","twilio","shopify"];
+const TIER2_COS = ["flipkart","swiggy","zomato","meesho","razorpay","phonepe","paytm","cred","groww","zepto","blinkit","ola","myntra","nykaa","lenskart","bigbasket","urban company","byju","unacademy","cars24","delhivery","dream11","sharechat","easemytrip","makemytrip","zerodha","upstox","acko","digit","cleartax"];
+
+const SALARY_REF = {
+  "senior_pm|tier1":[55,85], "senior_pm|tier2":[40,60], "senior_pm|tier3":[28,45],
+  "pm|tier1":[35,55],        "pm|tier2":[25,40],         "pm|tier3":[18,32],
+  "tpm|tier1":[50,75],       "tpm|tier2":[38,55],        "tpm|tier3":[25,42],
+  "tam|tier1":[45,65],       "tam|tier2":[32,50],        "tam|tier3":[22,38],
+  "pgm|tier1":[40,60],       "pgm|tier2":[28,45],        "pgm|tier3":[20,35],
+  "product_ops|tier1":[38,55],"product_ops|tier2":[25,42],"product_ops|tier3":[18,32],
+};
+
+const EXP_REF = {
+  "senior_pm|tier1":[5,9],  "senior_pm|tier2":[4,8],  "senior_pm|tier3":[4,7],
+  "pm|tier1":[2,5],         "pm|tier2":[2,4],          "pm|tier3":[1,4],
+  "tpm|tier1":[5,9],        "tpm|tier2":[4,7],         "tpm|tier3":[3,6],
+  "tam|tier1":[4,8],        "tam|tier2":[3,6],         "tam|tier3":[2,5],
+  "pgm|tier1":[4,8],        "pgm|tier2":[3,6],         "pgm|tier3":[2,5],
+  "product_ops|tier1":[3,6],"product_ops|tier2":[2,5], "product_ops|tier3":[2,4],
+};
+
+// ── Skills taxonomy (keyword → canonical name) ────────────────────
+const SKILLS_TAXONOMY = [
+  ["product roadmap","Product Roadmap"],["product strategy","Product Strategy"],
+  ["product sense","Product Sense"],["product management","Product Management"],
+  ["prd","PRD Writing"],["product requirement","PRD Writing"],
+  ["go-to-market","Go-To-Market"],["gtm","Go-To-Market"],
+  ["a/b test","A/B Testing"],["ab test","A/B Testing"],
+  ["growth","Growth"],["monetis","Monetisation"],["monetiz","Monetisation"],
+  ["program management","Program Management"],["project management","Program Management"],
+  ["stakeholder","Stakeholder Management"],["cross-functional","Cross-functional Leadership"],
+  ["cross functional","Cross-functional Leadership"],["process improvement","Process Optimization"],
+  ["process optimis","Process Optimization"],["process optimiz","Process Optimization"],
+  ["automation","Automation"],["api integration","API Integration"],
+  ["rest api","REST API"],["api","API Integration"],
+  ["sql","SQL"],["python","Python"],["data analysis","Data Analysis"],
+  ["data driven","Data Analysis"],["analytics","Data Analysis"],
+  ["machine learning","Machine Learning"],["gen-ai","Gen-AI"],
+  ["generative ai","Gen-AI"],["ai/ml","Gen-AI"],["llm","Gen-AI"],
+  ["prompt engineering","Prompt Engineering"],["cloud","Cloud"],
+  ["aws","Cloud"],["azure","Cloud"],["gcp","Cloud"],
+  ["fintech","Fintech"],["payments","Fintech"],["saas","SaaS"],
+  ["b2b","B2B"],["b2c","B2C"],["marketplace","Marketplace"],
+  ["e-commerce","E-commerce"],["ecommerce","E-commerce"],
+  ["logistics","Logistics"],["last mile","Last-Mile Delivery"],
+  ["last-mile","Last-Mile Delivery"],["supply chain","Supply Chain"],
+  ["developer platform","Developer Platform"],["developer tools","Developer Tools"],
+  ["enterprise","Enterprise"],["seller","Seller Management"],
+  ["technical account","Technical Account Management"],
+  ["account management","Technical Account Management"],
+  ["customer success","Customer Success"],["negotiation","Negotiation"],
+  ["leadership","Leadership"],["communication","Communication"],
+];
+
+const SHUBHAM_CANONICAL = new Set([
+  "API Integration","Product Management","Program Management","SQL",
+  "Prompt Engineering","Automation","Process Optimization","Stakeholder Management",
+  "Technical Account Management","Gen-AI","Last-Mile Delivery","Seller Management",
+  "Data Analysis","Go-To-Market","SaaS","Python","Fintech","E-commerce",
+  "Cross-functional Leadership","Enterprise","Logistics","Supply Chain","B2B",
+]);
+
+function classifyRole(title) {
+  const tl = (title||"").toLowerCase();
+  if (tl.includes("technical account") || tl.includes(" tam")) return "tam";
+  if (tl.includes("technical program") || tl.includes(" tpm")) return "tpm";
+  if (tl.includes("product ops") || tl.includes("product operations") || tl.includes("tech ops")) return "product_ops";
+  if (tl.includes("senior product") || tl.includes("senior pm") || tl.includes("lead pm") || tl.includes("staff pm")) return "senior_pm";
+  if (tl.includes("product manager") || tl.includes(" pm ")) return "pm";
+  if (tl.includes("program manager") || tl.includes("programme manager")) return "pgm";
+  return "pm";
+}
+
+function classifyCompany(company) {
+  const cl = (company||"").toLowerCase();
+  if (TIER1_COS.some(t => cl.includes(t))) return "tier1";
+  if (TIER2_COS.some(t => cl.includes(t))) return "tier2";
+  return "tier3";
+}
+
+function estimateSalary(title, company) {
+  const key = classifyRole(title) + "|" + classifyCompany(company);
+  const range = SALARY_REF[key] || [25,35];
+  return { est: (range[0]+range[1])/2, lo: range[0], hi: range[1] };
+}
+
+function estimateExp(title, company) {
+  const key = classifyRole(title) + "|" + classifyCompany(company);
+  const range = EXP_REF[key] || [3,6];
+  return { lo: range[0], hi: range[1] };
+}
+
+function extractSkillsFromJD(jd, title) {
+  const text = ((jd||"") + " " + (title||"")).toLowerCase();
+  const found = new Set();
+  for (const [kw, canonical] of SKILLS_TAXONOMY) {
+    if (text.includes(kw)) found.add(canonical);
+  }
+  return [...found];
+}
+
+function extractExpFromJD(jd) {
+  if (!jd) return null;
+  const m = jd.match(/(\d+)\s*[\+\-–to]+\s*(\d+)?\s*(?:years?|yrs?)/i);
+  if (m) return { lo: parseInt(m[1]), hi: m[2] ? parseInt(m[2]) : parseInt(m[1])+3 };
+  const m2 = jd.match(/(\d+)\+\s*(?:years?|yrs?)/i);
+  if (m2) return { lo: parseInt(m2[1]), hi: parseInt(m2[1])+3 };
+  return null;
+}
+
 const BASE_CV = `Shubham Garg | garg.shubham21@gmail.com | +91-9643566485 | Bangalore, India
 
 PROFESSIONAL SUMMARY
@@ -157,55 +268,98 @@ const MOCK_JOBS = [
 function computeScore(job, settings) {
   const { weights, salaryBuckets } = settings;
   const mySkills = SHUBHAM_SKILLS.map(s => s.toLowerCase());
-  
-  // Guard: salary_lpa from scraper OR salary field from mock data
-  const salaryVal = job.salary_lpa !== undefined ? job.salary_lpa : job.salary;
-  
-  let sal = 50;
-  if (salaryVal !== null && salaryVal !== undefined) {
-    if (salaryVal >= salaryBuckets.tier1) sal = 100;
-    else if (salaryVal >= salaryBuckets.tier2) sal = 72;
-    else sal = 35;
+
+  // ── Salary: use stated → scraper estimate → frontend estimate ──
+  const statedSalary = job.salary_lpa !== undefined ? job.salary_lpa
+                     : job.salary !== undefined     ? job.salary
+                     : null;
+  let salaryEstValue, salaryEstimated, salaryDisplay, salaryLo, salaryHi;
+
+  if (statedSalary !== null && statedSalary !== undefined) {
+    salaryEstValue  = statedSalary;
+    salaryEstimated = false;
+    salaryDisplay   = `₹${statedSalary} LPA`;
+  } else if (job.salary_est_value !== undefined) {
+    // pre-computed by backend scorer
+    salaryEstValue  = job.salary_est_value;
+    salaryEstimated = true;
+    salaryDisplay   = job.salary_display || `~₹${job.salary_est_value} LPA est.`;
+  } else {
+    // compute on frontend
+    const est = estimateSalary(job.title, job.company);
+    salaryEstValue  = est.est;
+    salaryLo        = est.lo;
+    salaryHi        = est.hi;
+    salaryEstimated = true;
+    salaryDisplay   = `~₹${est.lo}–${est.hi} LPA est.`;
   }
-  
+
+  let sal = 50;
+  if (salaryEstValue >= salaryBuckets.tier1) sal = 100;
+  else if (salaryEstValue >= salaryBuckets.tier2) sal = 72;
+  else if (salaryEstValue >= 30) sal = 40;
+  else sal = 20;
+
+  // ── Experience: stated in JD → scraper → frontend estimate ────
+  let expMin, expMax, expEstimated;
+  if (job.exp_min !== undefined) {
+    expMin = job.exp_min; expMax = job.exp_max; expEstimated = job.exp_estimated;
+  } else {
+    const fromJD = extractExpFromJD(job.jd);
+    if (fromJD) {
+      expMin = fromJD.lo; expMax = fromJD.hi; expEstimated = false;
+    } else {
+      const est = estimateExp(job.title, job.company);
+      expMin = est.lo; expMax = est.hi; expEstimated = true;
+    }
+  }
+  const expDisplay = `${expMin}–${expMax} yrs${expEstimated ? " est." : ""}`;
+
+  // ── Skills: from scraper → extract from JD ────────────────────
+  const jobSkills = Array.isArray(job.skills) && job.skills.length > 0
+    ? job.skills
+    : extractSkillsFromJD(job.jd, job.title);
+
+  // Match skills
+  let matched = 0;
+  if (jobSkills.length > 0) {
+    matched = jobSkills.filter(s =>
+      mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms)) ||
+      SHUBHAM_CANONICAL.has(s)
+    ).length;
+  } else {
+    matched = mySkills.filter(ms => (job.jd||"").toLowerCase().includes(ms)).length;
+  }
+  const skillBase = jobSkills.length > 0 ? jobSkills.length : Math.max(mySkills.length * 0.3, 1);
+  const skills = Math.min(100, Math.round((matched / skillBase) * 100));
+
+  // ── Role & WorkEx ─────────────────────────────────────────────
   const tl = (job.title || "").toLowerCase();
   const exact = settings.targetRoles.some(r => tl.includes(r.toLowerCase()));
   const partial = !exact && settings.targetRoles.some(r =>
     r.toLowerCase().split(" ").some(w => w.length > 4 && tl.includes(w))
   );
   const role = exact ? 100 : partial ? 65 : 30;
-  
-  // Guard: skills may be missing in scraped jobs
-  const jobSkills = Array.isArray(job.skills) ? job.skills : [];
-  const jdText = (job.jd || job.title || "").toLowerCase();
-  
-  // If no skills array, match against JD text instead
-  let matched = 0;
-  if (jobSkills.length > 0) {
-    matched = jobSkills.filter(s =>
-      mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms))
-    ).length;
-  } else {
-    matched = mySkills.filter(ms => jdText.includes(ms)).length;
-  }
-  const skillBase = jobSkills.length > 0 ? jobSkills.length : Math.max(mySkills.length * 0.3, 1);
-  const skills = Math.min(100, Math.round((matched / skillBase) * 100));
-  
-  // levelMatch may not exist in scraped jobs — default to Right
-  const wx = job.levelMatch === "Right" || !job.levelMatch ? 95 : job.levelMatch === "Senior" ? 75 : 50;
-  
+  const wx = job.levelMatch === "Senior" ? 75 : job.levelMatch === "Junior" ? 50 : 95;
+
   const total = Math.round(
     sal    * (weights.salary  / 100) +
     role   * (weights.role    / 100) +
     skills * (weights.skills  / 100) +
     wx     * (weights.workex  / 100)
   );
-  
+
   const isWatchlist = settings.targetCompanies.some(c =>
     (job.company || "").toLowerCase().includes(c.toLowerCase())
   );
   const finalTotal = Math.min(100, isWatchlist ? total + 5 : total);
-  return { total: finalTotal, sal, role, skills, wx, matched, isWatchlist };
+
+  return {
+    total: finalTotal, sal, role, skills, wx, matched, isWatchlist,
+    salaryEstValue, salaryEstimated, salaryDisplay,
+    expMin, expMax, expEstimated, expDisplay,
+    computedSkills: jobSkills,
+  };
 }
 
 const scoreColor = (s, t) => s >= 75 ? t.green : s >= 50 ? t.accent : s >= 30 ? t.amber : t.red;
@@ -567,17 +721,17 @@ function DetailPanel({ job, status, jobState, onApply, onGenerateCV, onSkillGap,
           <div style={{ display:"flex", gap:16, marginBottom:14, flexWrap:"wrap" }}>
             <div style={{ background:t.surface3, border:`1px solid ${t.border}`, borderRadius:8, padding:"8px 14px" }}>
               <div style={{ fontSize:10, color:t.textMuted, fontWeight:700, textTransform:"uppercase", letterSpacing:0.8, marginBottom:3 }}>Experience Required</div>
-              <div style={{ fontSize:13, fontWeight:700, color: job.exp_estimated ? t.amber : t.text }}>
-                {job.exp_display || `${job.exp_min}–${job.exp_max} yrs`}
+              <div style={{ fontSize:13, fontWeight:700, color: (job.score?.expEstimated||job.exp_estimated) ? t.amber : t.text }}>
+                {job.score?.expDisplay || job.exp_display || "Not stated"}
               </div>
-              {job.exp_estimated && <div style={{ fontSize:10, color:t.textMuted, marginTop:2 }}>estimated</div>}
+              {(job.score?.expEstimated||job.exp_estimated) && <div style={{ fontSize:10, color:t.textMuted, marginTop:2 }}>estimated</div>}
             </div>
             <div style={{ background:t.surface3, border:`1px solid ${t.border}`, borderRadius:8, padding:"8px 14px" }}>
               <div style={{ fontSize:10, color:t.textMuted, fontWeight:700, textTransform:"uppercase", letterSpacing:0.8, marginBottom:3 }}>Salary</div>
-              <div style={{ fontSize:13, fontWeight:700, color: job.salary_estimated ? t.amber : t.text }}>
-                {job.salary_display || job.salaryDisplay || "Not Listed"}
+              <div style={{ fontSize:13, fontWeight:700, color: job.score?.salaryEstimated ? t.amber : t.text }}>
+                {job.score?.salaryDisplay || job.salary_display || job.salaryDisplay || "Not Listed"}
               </div>
-              {job.salary_estimated && <div style={{ fontSize:10, color:t.textMuted, marginTop:2 }}>market estimate</div>}
+              {job.score?.salaryEstimated && <div style={{ fontSize:10, color:t.textMuted, marginTop:2 }}>market estimate</div>}
             </div>
             <div style={{ background:t.surface3, border:`1px solid ${t.border}`, borderRadius:8, padding:"8px 14px" }}>
               <div style={{ fontSize:10, color:t.textMuted, fontWeight:700, textTransform:"uppercase", letterSpacing:0.8, marginBottom:3 }}>Match Score</div>
@@ -591,7 +745,7 @@ function DetailPanel({ job, status, jobState, onApply, onGenerateCV, onSkillGap,
           <div style={{ marginTop:14 }}>
             <div style={{ fontSize:11, color:t.textMuted, textTransform:"uppercase", letterSpacing:1, marginBottom:8, fontWeight:700 }}>Required Skills</div>
             <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-              {(Array.isArray(job.skills) ? job.skills : []).map(s => {
+              {(job.score?.computedSkills || (Array.isArray(job.skills) ? job.skills : [])).map(s => {
                 const myS = SHUBHAM_SKILLS.map(x=>x.toLowerCase());
                 const match = myS.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms));
                 return (
@@ -766,9 +920,9 @@ function JobTable({ jobs, jobStatuses, expandedId, setExpandedId, updateStatus, 
                 <div style={{ display:"flex", alignItems:"center", fontSize:12, color:t.textDim }}>{job.location}</div>
 
                 <div style={{ display:"flex", alignItems:"center", fontSize:12, fontFamily:"'IBM Plex Mono',monospace",
-                  color: job.salary_lpa ? t.text : job.salary_estimated ? t.amber : t.textMuted,
-                  title: job.salary_estimated ? "Estimated from market data — not stated by employer" : "" }}>
-                  {job.salary_display || job.salaryDisplay || "Not Listed"}
+                  color: (job.salary_lpa||job.salary) ? t.text : t.amber,
+                  title: job.score?.salaryEstimated ? "Estimated from market data — not stated by employer" : "" }}>
+                  {job.score?.salaryDisplay || job.salary_display || job.salaryDisplay || "Not Listed"}
                 </div>
 
                 <div style={{ display:"flex", alignItems:"center" }}>
@@ -1212,10 +1366,9 @@ export default function JobRadar() {
       );
     }
     if (sourceFilter.length > 0) out = out.filter(j=>sourceFilter.includes(j.source));
-    // Salary range filter — uses estimated salary if stated not available
     if (salaryRange[0] > 0 || salaryRange[1] < 200) {
       out = out.filter(j => {
-        const s = j.salary_est_value ?? j.salary_lpa ?? j.salary ?? 0;
+        const s = j.score?.salaryEstValue ?? j.salary_est_value ?? j.salary_lpa ?? j.salary ?? 0;
         return s >= salaryRange[0] && s <= salaryRange[1];
       });
     }
@@ -1233,10 +1386,7 @@ export default function JobRadar() {
     return out;
   }, [search, sourceFilter, sortBy, salaryRange]);
 
-  // salary_est_value is always populated (stated or estimated from market data)
-  // salary_lpa is null if not stated (estimated only)
-  const getSalary  = j => j.salary_est_value ?? j.salary_lpa ?? j.salary ?? 0;
-  const hasStated  = j => j.salary_lpa !== null && j.salary_lpa !== undefined;
+  const getSalary = j => j.score?.salaryEstValue ?? j.salary_est_value ?? j.salary_lpa ?? j.salary ?? 0;
   const t1 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)>=settings.salaryBuckets.tier1)),   [scoredJobs,applyFiltersAndSort,settings]);
   const t2 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)>=settings.salaryBuckets.tier2 && getSalary(j)<settings.salaryBuckets.tier1)), [scoredJobs,applyFiltersAndSort,settings]);
   const na = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)<settings.salaryBuckets.tier2)), [scoredJobs,applyFiltersAndSort]);
