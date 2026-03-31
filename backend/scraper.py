@@ -20,7 +20,7 @@ from playwright.async_api import async_playwright, TimeoutError as PWTimeout
 
 from config import (
     LINKEDIN_QUERIES, NAUKRI_QUERIES, IIMJOBS_QUERIES,
-    COMPANY_CAREER_PAGES, TITLE_BLOCKLIST,
+    COMPANY_CAREER_PAGES, TITLE_BLOCKLIST, MIN_SALARY_LPA,
 )
 
 # Paths resolved after BASE_DIR is set below
@@ -68,6 +68,18 @@ def job_id(title: str, company: str, location: str) -> str:
 def is_blocked(title: str) -> bool:
     tl = title.lower()
     return any(b in tl for b in TITLE_BLOCKLIST)
+
+
+def salary_too_low(salary_text: str) -> bool:
+    """Return True if salary is explicitly below MIN_SALARY_LPA. 
+    If salary is missing/unknown, always include the job."""
+    if not salary_text or not salary_text.strip():
+        return False  # no salary info → include it
+    from scorer import extract_salary_lpa
+    lpa = extract_salary_lpa(salary_text)
+    if lpa is None:
+        return False  # can't parse → include it
+    return lpa < MIN_SALARY_LPA
 
 
 async def human_delay(min_s=1.5, max_s=3.5):
@@ -195,6 +207,8 @@ async def scrape_naukri(page, query: str) -> list[dict]:
 
                 if not title or is_blocked(title):
                     continue
+                if salary_too_low(salary):
+                    continue
 
                 # Ensure Naukri link is absolute
                 if link and link.startswith("/"):
@@ -251,6 +265,8 @@ async def scrape_iimjobs(page, query: str) -> list[dict]:
                 link    = await link_el.get_attribute("href")      if link_el     else ""
 
                 if not title or is_blocked(title):
+                    continue
+                if salary_too_low(salary):
                     continue
 
                 if link and link.startswith("/"):
