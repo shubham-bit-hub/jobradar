@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // THEME
@@ -1076,8 +1076,11 @@ export default function JobRadar() {
   const SS = isDark ? STATUS_STYLES_DARK : STATUS_STYLES_LIGHT;
 
   const [settings,     setSettings]     = useState(DEFAULT_SETTINGS);
+  const [rawJobs,      setRawJobs]      = useState(MOCK_JOBS);
+  const [jobsLoading,  setJobsLoading]  = useState(true);
+  const [jobsError,    setJobsError]    = useState(null);
   const [jobStatuses,  setJobStatuses]  = useState(
-    Object.fromEntries(MOCK_JOBS.map(j=>[j.id,{ status:j.initStatus, appliedDate:j.initStatus!=="Not Applied"?"2026-01-15":null }]))
+    Object.fromEntries(MOCK_JOBS.map(j=>[j.id,{ status:j.initStatus || "Not Applied", appliedDate:null }]))
   );
   const [expandedId,   setExpandedId]   = useState(null);
   const [activeTab,    setActiveTab]    = useState("tier1");
@@ -1089,6 +1092,38 @@ export default function JobRadar() {
   const [sortBy,       setSortBy]       = useState("score");
   const [salaryRange,  setSalaryRange]  = useState([0, 200]);
   const [jobNotes,     setJobNotes]     = useState({});
+
+  // ── Fetch real jobs from scraper output ─────────────────────────
+  useEffect(() => {
+    setJobsLoading(true);
+    fetch("/jobs.json?t=" + Date.now())
+      .then(r => {
+        if (!r.ok) throw new Error("jobs.json not found");
+        return r.json();
+      })
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setRawJobs(data);
+          // Init statuses for new jobs (preserve existing)
+          setJobStatuses(prev => {
+            const next = { ...prev };
+            data.forEach(j => {
+              if (!next[j.id]) {
+                next[j.id] = { status: "Not Applied", appliedDate: null };
+              }
+            });
+            return next;
+          });
+          setJobsError(null);
+        }
+      })
+      .catch(err => {
+        // Silently fall back to mock data — don't show error
+        setJobsError("Using demo data — scraper not yet connected");
+        console.warn("Could not load jobs.json, using mock data:", err.message);
+      })
+      .finally(() => setJobsLoading(false));
+  }, []);
 
   const updateStatus = (jobId, status) => {
     setJobStatuses(prev=>({...prev,[jobId]:{
@@ -1109,8 +1144,8 @@ export default function JobRadar() {
     setDetailState(prev=>({...prev,[jobId]:{...prev[jobId],...fields}}));
 
   const scoredJobs = useMemo(()=>
-    MOCK_JOBS.map(j=>({...j,score:computeScore(j,settings)})),
-    [settings]
+    rawJobs.map(j=>({...j,score:computeScore(j,settings)})),
+    [rawJobs, settings]
   );
 
   const applyFiltersAndSort = useCallback((list) => {
@@ -1204,7 +1239,15 @@ export default function JobRadar() {
             <div style={{ width:40, height:40, background:"linear-gradient(135deg,#1060e0,#0090e0)", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, boxShadow:"0 0 24px #1060e040", flexShrink:0 }}>📡</div>
             <div>
               <div style={{ fontWeight:800, fontSize:22, letterSpacing:"-0.5px", color:t.text }}>JobRadar</div>
-              <div style={{ fontSize:11, color:t.textMuted, fontFamily:"'IBM Plex Mono',monospace" }}>Shubham Garg · PM II Amazon · {scoredJobs.length} jobs indexed</div>
+              <div style={{ fontSize:11, color:t.textMuted, fontFamily:"'IBM Plex Mono',monospace" }}>
+              Shubham Garg · PM II Amazon ·{" "}
+              {jobsLoading
+                ? <span style={{ color:t.amber }}>⏳ Loading jobs…</span>
+                : jobsError
+                ? <span style={{ color:t.amber }} title={jobsError}>⚠ {scoredJobs.length} demo jobs (connect scraper)</span>
+                : <span style={{ color:t.green }}>✓ {scoredJobs.length} live jobs indexed</span>
+              }
+            </div>
             </div>
           </div>
 
