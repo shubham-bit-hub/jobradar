@@ -1,0 +1,19 @@
+2026-03-31 20:49:24,972  INFO      ============================================================
+2026-03-31 20:49:24,972  INFO      JobRadar scrape started — 2026-03-31 20:49
+2026-03-31 20:49:24,972  INFO      ============================================================
+2026-03-31 20:52:02,378  ERROR     Company page error (Flipkart): Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.flipkartcareers.com/#!/joblist
+Call log:
+  - navigating to "https://www.flipkartcareers.com/#!/joblist", waiting until "load"
+
+2026-03-31 20:54:33,913  ERROR     Company page error (Zomato): Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.zomato.com/careers
+Call log:
+  - navigating to "https://www.zomato.com/careers", waiting until "load"
+
+2026-03-31 20:54:39,087  ERROR     Company page error (PayPal): Page.goto: net::ERR_NAME_NOT_RESOLVED at https://jobs.paypal.com/en/search#q=product%20manager&location=Bangalore
+Call log:
+  - navigating to "https://jobs.paypal.com/en/search#q=product%20manager&location=Bangalore", waiting until "load"
+
+2026-03-31 20:54:43,390  INFO      New jobs since last run: 120
+2026-03-31 20:54:43,410  INFO      No new jobs above alert threshold — no WhatsApp sent.
+2026-03-31 20:54:43,412  INFO      DONE  |  Total: 120  |  50+LPA: 0  |  40-50LPA: 0  |  N/A: 120
+2026-03-31 20:54:43,412  INFO            |  Top score: 74  (Operations Analyst (Resource Management) @ Salesforce if final else '')
