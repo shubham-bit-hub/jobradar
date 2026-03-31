@@ -302,9 +302,17 @@ function generateTailoredCV(job, baseCv) {
 <p style="margin:0">${skillHighlight}</p>`;
 }
 
+const SHUBHAM_CANONICAL = new Set([
+  "API Integration","Product Management","Program Management","SQL",
+  "Prompt Engineering","Automation","Process Optimization","Stakeholder Management",
+  "Technical Account Management","Gen-AI","Last-Mile Delivery","Seller Management",
+  "Data Analysis","Go-To-Market","SaaS","Python","Fintech","E-commerce",
+  "Cross-functional Leadership","Enterprise","Logistics","Supply Chain","B2B",
+]);
+
 function generateSkillGap(job) {
   const mySkills = SHUBHAM_SKILLS.map(s => s.toLowerCase());
-  const jobSkills = job.skills || [];
+  const jobSkills = Array.isArray(job.skills) ? job.skills : [];
 
   const matchingSkills = jobSkills.filter(s =>
     mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms))
@@ -556,6 +564,28 @@ function DetailPanel({ job, status, jobState, onApply, onGenerateCV, onSkillGap,
       <div style={{ display:"flex", gap:24, marginBottom:20 }}>
         {/* JD */}
         <div style={{ flex:1 }}>
+          <div style={{ display:"flex", gap:16, marginBottom:14, flexWrap:"wrap" }}>
+            <div style={{ background:t.surface3, border:`1px solid ${t.border}`, borderRadius:8, padding:"8px 14px" }}>
+              <div style={{ fontSize:10, color:t.textMuted, fontWeight:700, textTransform:"uppercase", letterSpacing:0.8, marginBottom:3 }}>Experience Required</div>
+              <div style={{ fontSize:13, fontWeight:700, color: job.exp_estimated ? t.amber : t.text }}>
+                {job.exp_display || `${job.exp_min}–${job.exp_max} yrs`}
+              </div>
+              {job.exp_estimated && <div style={{ fontSize:10, color:t.textMuted, marginTop:2 }}>estimated</div>}
+            </div>
+            <div style={{ background:t.surface3, border:`1px solid ${t.border}`, borderRadius:8, padding:"8px 14px" }}>
+              <div style={{ fontSize:10, color:t.textMuted, fontWeight:700, textTransform:"uppercase", letterSpacing:0.8, marginBottom:3 }}>Salary</div>
+              <div style={{ fontSize:13, fontWeight:700, color: job.salary_estimated ? t.amber : t.text }}>
+                {job.salary_display || job.salaryDisplay || "Not Listed"}
+              </div>
+              {job.salary_estimated && <div style={{ fontSize:10, color:t.textMuted, marginTop:2 }}>market estimate</div>}
+            </div>
+            <div style={{ background:t.surface3, border:`1px solid ${t.border}`, borderRadius:8, padding:"8px 14px" }}>
+              <div style={{ fontSize:10, color:t.textMuted, fontWeight:700, textTransform:"uppercase", letterSpacing:0.8, marginBottom:3 }}>Match Score</div>
+              <div style={{ fontSize:13, fontWeight:700, color:scoreColor(job.score?.total??0, t) }}>
+                {job.score?.total ?? 0}/100 — {job.score?.total>=75?"Top Match":job.score?.total>=50?"Good Match":job.score?.total>=30?"Partial":"Low Fit"}
+              </div>
+            </div>
+          </div>
           <div style={{ fontSize:11, color:t.textMuted, textTransform:"uppercase", letterSpacing:1, marginBottom:8, fontWeight:700 }}>Job Description</div>
           <p style={{ margin:0, fontSize:13, color:t.textSub, lineHeight:1.8 }}>{job.jd}</p>
           <div style={{ marginTop:14 }}>
@@ -1231,7 +1261,8 @@ export default function JobRadar() {
   };
 
   const handleSkillGap = job => {
-    const gap = generateSkillGap(job);
+    // Use pre-computed skill gap from scraper if available
+    const gap = job.skill_gap || generateSkillGap(job);
     patchDetail(job.id, { skillGap: gap });
   };
 
