@@ -180,7 +180,12 @@ function computeScore(job, settings) {
     skills * (weights.skills  / 100) +
     wx     * (weights.workex  / 100)
   );
-  return { total, sal, role, skills, wx, matched };
+  // +5 bonus for watchlist companies (same as backend scorer)
+  const isWatchlist = settings.targetCompanies.some(c =>
+    job.company?.toLowerCase().includes(c.toLowerCase())
+  );
+  const finalTotal = Math.min(100, isWatchlist ? total + 5 : total);
+  return { total: finalTotal, sal, role, skills, wx, matched, isWatchlist };
 }
 
 const scoreColor = (s, t) => s >= 75 ? t.green : s >= 50 ? t.accent : s >= 30 ? t.amber : t.red;
@@ -701,6 +706,7 @@ function JobTable({ jobs, jobStatuses, expandedId, setExpandedId, updateStatus, 
                   <div style={{ fontSize:13, fontWeight:600, color:t.text, marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{job.title}</div>
                   <div style={{ fontSize:11, color:t.textDim }}>
                     <span style={{ color:t.accent, fontWeight:500 }}>{job.company}</span>
+                    {job.score?.isWatchlist && <span style={{ marginLeft:4, fontSize:10, background:t.amber+"22", color:t.amber, border:`1px solid ${t.amber}44`, borderRadius:4, padding:"1px 5px", fontWeight:700 }}>★ Watchlist</span>}
                     <span style={{ margin:"0 5px" }}>·</span>{job.source}
                     <span style={{ margin:"0 5px" }}>·</span>{job.posted}
                     {jState?.note && <span style={{ marginLeft:6, color:t.amber }}>📝</span>}
@@ -953,7 +959,7 @@ function SettingsModal({ settings, setSettings, onClose, t }) {
         </Section>
 
         {/* Target Companies */}
-        <Section title="Target Companies">
+        <Section title="Watchlist Companies (★ +5 score bonus — not a filter)">
           <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:10 }}>
             {d.targetCompanies.map(c=>(
               <Chip key={c} label={c} onRemove={()=>setD(p=>({...p,targetCompanies:p.targetCompanies.filter(x=>x!==c)}))} />
@@ -968,17 +974,39 @@ function SettingsModal({ settings, setSettings, onClose, t }) {
         </Section>
 
         {/* Locations */}
-        <Section title="Preferred Locations">
-          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            {["Bangalore","Remote","Pan-India","Hyderabad","Mumbai","Pune"].map(loc=>{
+        <Section title="Preferred Locations (for display only — scraper fetches all India)">
+          <div style={{ fontSize:11, color:t.textMuted, marginBottom:8 }}>Quick add common cities:</div>
+          <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:12 }}>
+            {["Bangalore","Delhi","Mumbai","Hyderabad","Chennai","Pune","Gurugram","Noida","Remote","Pan-India"].map(loc => {
               const on = d.locations.includes(loc);
               return (
-                <button key={loc} onClick={()=>setD(p=>({...p,locations:on?p.locations.filter(l=>l!==loc):[...p.locations,loc]}))}
-                  style={{ background:on?t.accent+"22":t.surface2, color:on?t.accent:t.textMuted, border:`1px solid ${on?t.accent:t.border}`, borderRadius:8, padding:"7px 14px", cursor:"pointer", fontSize:12, fontFamily:"'Sora',sans-serif", fontWeight:on?600:400 }}>
-                  {loc}
+                <button key={loc} type="button"
+                  onClick={e=>{e.preventDefault();e.stopPropagation();setD(p=>({...p,locations:on?p.locations.filter(l=>l!==loc):[...p.locations,loc]}));}}
+                  style={{ background:on?t.accent+"22":t.surface2, color:on?t.accent:t.textMuted, border:`1px solid ${on?t.accent:t.border}`, borderRadius:8, padding:"6px 13px", cursor:"pointer", fontSize:12, fontFamily:"'Sora',sans-serif", fontWeight:on?700:400 }}>
+                  {on ? "✓ " : ""}{loc}
                 </button>
               );
             })}
+          </div>
+          <div style={{ fontSize:11, color:t.textMuted, marginBottom:6 }}>Your selected locations:</div>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:10, minHeight:32 }}>
+            {d.locations.length === 0 && <span style={{ fontSize:12, color:t.textMuted, fontStyle:"italic" }}>No locations added yet</span>}
+            {d.locations.map(loc => (
+              <span key={loc} style={{ background:t.surface2, color:t.textSub, border:`1px solid ${t.border}`, borderRadius:20, padding:"4px 10px", fontSize:12, display:"flex", alignItems:"center", gap:5 }}>
+                {loc}
+                <button type="button" onClick={e=>{e.preventDefault();e.stopPropagation();setD(p=>({...p,locations:p.locations.filter(l=>l!==loc)}));}}
+                  style={{ background:"none", border:"none", color:t.textMuted, cursor:"pointer", fontSize:14, padding:0, lineHeight:1, fontWeight:700 }}>×</button>
+              </span>
+            ))}
+          </div>
+          <div style={{ display:"flex", gap:8 }}>
+            <input value={newLoc} onChange={e=>setNewLoc(e.target.value)}
+              placeholder="Type any city e.g. Kochi, Ahmedabad, Chandigarh…"
+              onKeyDown={e=>{if(e.key==="Enter"){e.preventDefault();const v=newLoc.trim();if(v&&!d.locations.includes(v)){setD(p=>({...p,locations:[...p.locations,v]}));setNewLoc("");}}}}
+              style={{ flex:1, background:t.input, border:`1px solid ${t.border}`, borderRadius:8, padding:"8px 12px", color:t.text, fontSize:13, fontFamily:"'Sora',sans-serif", outline:"none" }} />
+            <button type="button"
+              onClick={e=>{e.preventDefault();const v=newLoc.trim();if(v&&!d.locations.includes(v)){setD(p=>({...p,locations:[...p.locations,v]}));setNewLoc("");}}}
+              style={{ background:t.surface3, color:t.accent, border:`1px solid ${t.border}`, borderRadius:8, padding:"0 16px", cursor:"pointer", fontSize:13, fontFamily:"'Sora',sans-serif", whiteSpace:"nowrap" }}>Add</button>
           </div>
         </Section>
 
@@ -988,7 +1016,7 @@ function SettingsModal({ settings, setSettings, onClose, t }) {
             style={{ width:"100%", background:t.input, border:`1px solid ${t.border}`, borderRadius:8, padding:12, color:t.textSub, fontSize:11, fontFamily:"'IBM Plex Mono',monospace", lineHeight:1.7, resize:"vertical", outline:"none" }} />
         </Section>
 
-        <button onClick={save} disabled={!wOk} style={{
+        <button type="button" onClick={e=>{e.preventDefault();e.stopPropagation();save();}} disabled={!wOk} style={{
           width:"100%", background: wOk ? "linear-gradient(135deg,#1060e0,#0090e0)" : t.border,
           color: wOk ? "#fff" : t.textMuted, border:"none", borderRadius:12,
           padding:"15px 0", fontSize:15, fontWeight:700, cursor:wOk?"pointer":"not-allowed",
@@ -1059,6 +1087,7 @@ export default function JobRadar() {
   const [search,       setSearch]       = useState("");
   const [sourceFilter, setSourceFilter] = useState([]);
   const [sortBy,       setSortBy]       = useState("score");
+  const [salaryRange,  setSalaryRange]  = useState([0, 200]);
   const [jobNotes,     setJobNotes]     = useState({});
 
   const updateStatus = (jobId, status) => {
@@ -1095,6 +1124,13 @@ export default function JobRadar() {
       );
     }
     if (sourceFilter.length > 0) out = out.filter(j=>sourceFilter.includes(j.source));
+    // Salary range filter — only apply if user has moved the sliders
+    if (salaryRange[0] > 0 || salaryRange[1] < 200) {
+      out = out.filter(j => {
+        if (j.salary === null) return salaryRange[1] >= 200; // show N/A jobs only if max is uncapped
+        return j.salary >= salaryRange[0] && j.salary <= salaryRange[1];
+      });
+    }
     out.sort((a,b) => {
       if (sortBy === "score")   return b.score.total - a.score.total;
       if (sortBy === "salary")  return (b.salary||0) - (a.salary||0);
@@ -1103,7 +1139,7 @@ export default function JobRadar() {
       return 0;
     });
     return out;
-  }, [search, sourceFilter, sortBy]);
+  }, [search, sourceFilter, sortBy, salaryRange]);
 
   const t1 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>j.salary!==null && j.salary>=settings.salaryBuckets.tier1)),   [scoredJobs,applyFiltersAndSort,settings]);
   const t2 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>j.salary!==null && j.salary>=settings.salaryBuckets.tier2 && j.salary<settings.salaryBuckets.tier1)), [scoredJobs,applyFiltersAndSort,settings]);
@@ -1212,7 +1248,7 @@ export default function JobRadar() {
         <div style={{ padding:"0 28px 48px" }}>
           {activeTab !== "tracker" && (
             <>
-              <FilterBar search={search} setSearch={setSearch} sourceFilter={sourceFilter} setSourceFilter={setSourceFilter} sortBy={sortBy} setSortBy={setSortBy} t={t} />
+              <FilterBar search={search} setSearch={setSearch} sourceFilter={sourceFilter} setSourceFilter={setSourceFilter} sortBy={sortBy} setSortBy={setSortBy} salaryRange={salaryRange} setSalaryRange={setSalaryRange} t={t} />
               <JobTable
                 jobs={currentJobs}
                 jobStatuses={jobStatuses}

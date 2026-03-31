@@ -4,12 +4,8 @@
 # ─────────────────────────────────────────────────────────────────
 
 # ── WhatsApp (CallMeBot) ──────────────────────────────────────────
-# Setup (one-time, 2 minutes):
-#   1. Add +34 644 59 74 18 to your WhatsApp contacts
-#   2. Send them: "I allow callmebot to send me messages"
-#   3. You'll receive an API key — paste it below
 WHATSAPP_PHONE   = "+919643566485"
-WHATSAPP_API_KEY = "YOUR_CALLMEBOT_KEY"   # replace after setup
+WHATSAPP_API_KEY = "YOUR_CALLMEBOT_KEY"
 
 # ── Scoring weights (must sum to 100) ────────────────────────────
 WEIGHTS = {
@@ -22,6 +18,10 @@ WEIGHTS = {
 # ── Salary thresholds (LPA) ──────────────────────────────────────
 SALARY_TIER1 = 50   # Premium bucket
 SALARY_TIER2 = 40   # Good bucket
+
+# ── Minimum salary to scrape (jobs below this are skipped) ────────
+# Set to 0 to scrape everything, 30 to skip junior/low-paying roles
+MIN_SALARY_LPA = 30
 
 # ── Alert threshold ───────────────────────────────────────────────
 ALERT_SCORE_THRESHOLD = 75
@@ -37,7 +37,7 @@ TARGET_ROLES = [
     "Tech Ops Manager",
 ]
 
-# ── Target companies (watchlist) ──────────────────────────────────
+# ── Watchlist companies (+5 score bonus, NOT a filter) ─────────────
 TARGET_COMPANIES = [
     "Flipkart", "Google", "Microsoft", "Uber", "Swiggy", "Stripe",
     "Adobe", "Meesho", "Razorpay", "PhonePe", "Zomato",
@@ -53,42 +53,62 @@ CANDIDATE_SKILLS = [
     "Go-To-Market", "SaaS", "Python", "Fintech",
 ]
 
-# ── Search locations ──────────────────────────────────────────────
-SEARCH_LOCATIONS = ["Bangalore", "Remote", "India"]
-
 # ── Title blocklist (jobs with these words are skipped) ───────────
 TITLE_BLOCKLIST = [
     "intern", "internship", "fresher", "trainee",
     "vice president", "vp ", "director", "chief",
 ]
 
-# ── LinkedIn search queries ────────────────────────────────────────
+# ── LinkedIn queries — broad India-wide, ALL companies ────────────
+# Covers all major cities + remote. LinkedIn filters by location.
 LINKEDIN_QUERIES = [
-    "Senior Product Manager India",
-    "Technical Program Manager India",
-    "Technical Account Manager India",
-    "Senior Program Manager API India",
-    "Product Operations Manager India",
+    # Bangalore
     "Senior Product Manager Bangalore",
     "Technical Program Manager Bangalore",
     "Technical Account Manager Bangalore",
+    "Senior Program Manager Bangalore",
+    "Product Operations Manager Bangalore",
+    # Delhi / NCR
+    "Senior Product Manager Delhi",
+    "Technical Program Manager Gurgaon",
+    "Senior Product Manager Noida",
+    "Technical Account Manager Delhi NCR",
+    # Mumbai
+    "Senior Product Manager Mumbai",
+    "Technical Program Manager Mumbai",
+    "Technical Account Manager Mumbai",
+    # Hyderabad
+    "Senior Product Manager Hyderabad",
+    "Technical Program Manager Hyderabad",
+    # Chennai
+    "Senior Product Manager Chennai",
+    "Technical Account Manager Chennai",
+    # Remote / Pan-India
     "Senior Product Manager remote India",
-    "Tech Ops Manager India",
+    "Technical Program Manager remote India",
+    "Product Manager API remote India",
+    "Technical Account Manager India",
+    "Senior Program Manager API India",
+    "Product Manager fintech India",
+    "Product Manager SaaS India",
 ]
 
-# ── Naukri search queries ─────────────────────────────────────────
+# ── Naukri queries — ALL companies, ALL India cities ──────────────
 NAUKRI_QUERIES = [
     "Senior Product Manager",
     "Technical Program Manager",
     "Technical Account Manager",
-    "Senior Program Manager",
-    "Product Manager API",
-    "Technical Account Manager API",
+    "Senior Program Manager API",
+    "Product Manager API platform",
     "Product Operations Manager",
-    "Program Manager product",
+    "Senior PM fintech",
+    "Senior PM SaaS",
+    "Tech Ops Manager",
+    "Product Manager e-commerce",
+    "Senior Program Manager tech",
 ]
 
-# ── IIMJobs search queries ────────────────────────────────────────
+# ── IIMJobs queries — senior roles, ALL companies ─────────────────
 IIMJOBS_QUERIES = [
     "Senior Product Manager",
     "Technical Account Manager",
@@ -96,26 +116,28 @@ IIMJOBS_QUERIES = [
     "Technical Program Manager",
     "Product Manager fintech",
     "Senior Program Manager",
+    "Product Operations Manager",
+    "Senior Product Manager SaaS",
 ]
 
-# ── Company career page URLs ──────────────────────────────────────
+# ── Company career pages (watchlist only — supplementary) ─────────
 COMPANY_CAREER_PAGES = {
     "Flipkart":   "https://www.flipkartcareers.com/#!/joblist",
-    "Google":     "https://careers.google.com/jobs/results/?location=Bangalore%2C+Karnataka%2C+India&q=product+manager",
-    "Stripe":     "https://stripe.com/jobs/search?l=bangalore",
-    "Adobe":      "https://careers.adobe.com/us/en/search-results?keywords=product%20manager&location=Bangalore",
-    "Salesforce": "https://careers.salesforce.com/en/jobs/?search=product+manager&location=Bangalore",
+    "Google":     "https://careers.google.com/jobs/results/?location=India&q=product+manager",
+    "Stripe":     "https://stripe.com/jobs/search?l=india",
+    "Adobe":      "https://careers.adobe.com/us/en/search-results?keywords=product%20manager&location=India",
+    "Salesforce": "https://careers.salesforce.com/en/jobs/?search=product+manager&location=India",
     "Atlassian":  "https://www.atlassian.com/company/careers/all-jobs?team=&location=India&search=product",
     "Meesho":     "https://meesho.io/jobs",
     "Razorpay":   "https://razorpay.com/jobs/",
     "PhonePe":    "https://www.phonepe.com/careers/",
-    "Uber":       "https://www.uber.com/us/en/careers/list/?query=product%20manager&location=bangalore",
+    "Uber":       "https://www.uber.com/us/en/careers/list/?query=product%20manager&location=india",
     "Swiggy":     "https://careers.swiggy.com/#/",
-    "Microsoft":  "https://jobs.careers.microsoft.com/global/en/search?q=product%20manager&l=Bangalore",
+    "Microsoft":  "https://jobs.careers.microsoft.com/global/en/search?q=product%20manager&l=India",
     "Zomato":     "https://www.zomato.com/careers",
-    "PayPal":     "https://jobs.paypal.com/en/search#q=product%20manager&location=Bangalore",
+    "PayPal":     "https://jobs.paypal.com/en/search#q=product%20manager&location=India",
 }
 
 # ── Output paths ──────────────────────────────────────────────────
-JOBS_OUTPUT_PATH = "public/jobs.json"
-LOG_PATH         = "logs/scraper.log"
+JOBS_OUTPUT_PATH = "../public/jobs.json"
+LOG_PATH         = "../logs/scraper.log"
