@@ -301,37 +301,6 @@
     "tier": "na"
   },
   {
-    "id": "e064dc890011",
-    "title": "Program Management, ReCommerce Team",
-    "company": "Amazon",
-    "location": "Bengaluru, Karnataka, India",
-    "link": "https://in.linkedin.com/jobs/view/program-management-recommerce-team-at-amazon-4392948818",
-    "source": "LinkedIn",
-    "salary_text": "",
-    "jd": "Program Management, ReCommerce Team at Amazon. Senior Program Manager Bangalore.",
-    "posted": "Today",
-    "isNew": true,
-    "scraped_at": "2026-03-31",
-    "salary_lpa": null,
-    "salary_display": "Not Listed",
-    "score": 71,
-    "score_breakdown": {
-      "salary": 50,
-      "role": 65,
-      "skills": 98,
-      "workex": 95
-    },
-    "matched_skills": [
-      "Product Management",
-      "Program Management",
-      "Stakeholder Management",
-      "Technical Account Management",
-      "Seller Partner Management"
-    ],
-    "is_watchlist": false,
-    "tier": "na"
-  },
-  {
     "id": "bbec757f65a6",
     "title": "Senior Product Manager",
     "company": "Microsoft",
@@ -383,6 +352,37 @@
       "Product Management"
     ],
     "is_watchlist": true,
+    "tier": "na"
+  },
+  {
+    "id": "e064dc890011",
+    "title": "Program Management, ReCommerce Team",
+    "company": "Amazon",
+    "location": "Bengaluru, Karnataka, India",
+    "link": "https://in.linkedin.com/jobs/view/program-management-recommerce-team-at-amazon-4392948818",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Program Management, ReCommerce Team at Amazon. Senior Program Manager Bangalore.",
+    "posted": "Today",
+    "isNew": false,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 71,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 98,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Product Management",
+      "Program Management",
+      "Stakeholder Management",
+      "Technical Account Management",
+      "Seller Partner Management"
+    ],
+    "is_watchlist": false,
     "tier": "na"
   },
   {
@@ -2282,35 +2282,6 @@
     "tier": "na"
   },
   {
-    "id": "5603e9353cd9",
-    "title": "Program Manager, RCP, Operations Integration (Supply Chain)",
-    "company": "Amazon",
-    "location": "Bengaluru, Karnataka, India",
-    "link": "https://in.linkedin.com/jobs/view/program-manager-rcp-operations-integration-supply-chain-at-amazon-4392956373",
-    "source": "LinkedIn",
-    "salary_text": "",
-    "jd": "Program Manager, RCP, Operations Integration (Supply Chain) at Amazon. Product Operations Manager Bangalore.",
-    "posted": "Today",
-    "isNew": true,
-    "scraped_at": "2026-03-31",
-    "salary_lpa": null,
-    "salary_display": "Not Listed",
-    "score": 61,
-    "score_breakdown": {
-      "salary": 50,
-      "role": 65,
-      "skills": 58,
-      "workex": 80
-    },
-    "matched_skills": [
-      "API Integration",
-      "Product Management",
-      "Program Management"
-    ],
-    "is_watchlist": false,
-    "tier": "na"
-  },
-  {
     "id": "3c1b15ea50e4",
     "title": "Data Program & Delivery Manager",
     "company": "NTT DATA North America",
@@ -2363,6 +2334,35 @@
     "matched_skills": [
       "Product Management",
       "Fintech"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "5603e9353cd9",
+    "title": "Program Manager, RCP, Operations Integration (Supply Chain)",
+    "company": "Amazon",
+    "location": "Bengaluru, Karnataka, India",
+    "link": "https://in.linkedin.com/jobs/view/program-manager-rcp-operations-integration-supply-chain-at-amazon-4392956373",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Program Manager, RCP, Operations Integration (Supply Chain) at Amazon. Product Operations Manager Bangalore.",
+    "posted": "Today",
+    "isNew": false,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 61,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 58,
+      "workex": 80
+    },
+    "matched_skills": [
+      "API Integration",
+      "Product Management",
+      "Program Management"
     ],
     "is_watchlist": false,
     "tier": "na"
@@ -2723,34 +2723,6 @@
     "tier": "na"
   },
   {
-    "id": "73b45326aab9",
-    "title": "Technical Project Manager III",
-    "company": "JPMorganChase",
-    "location": "Mumbai, Maharashtra, India",
-    "link": "https://in.linkedin.com/jobs/view/technical-project-manager-iii-at-jpmorganchase-4392997187",
-    "source": "LinkedIn",
-    "salary_text": "",
-    "jd": "Technical Project Manager III at JPMorganChase. Technical Program Manager Mumbai.",
-    "posted": "Today",
-    "isNew": true,
-    "scraped_at": "2026-03-31",
-    "salary_lpa": null,
-    "salary_display": "Not Listed",
-    "score": 59,
-    "score_breakdown": {
-      "salary": 50,
-      "role": 65,
-      "skills": 39,
-      "workex": 95
-    },
-    "matched_skills": [
-      "Program Management",
-      "Technical Account Management"
-    ],
-    "is_watchlist": false,
-    "tier": "na"
-  },
-  {
     "id": "406d944105dc",
     "title": "Senior Consultant - Tax-TTC- Sirion - Hyderabad/Bengaluru/Gurugram/Pune/Chennai/Mumbai/Kolkata",
     "company": "Deloitte",
@@ -2975,34 +2947,6 @@
     "tier": "na"
   },
   {
-    "id": "d38dea062456",
-    "title": "Business Analyst General Insurance Regulatory, Finance & Accounting",
-    "company": "Capgemini",
-    "location": "Hyderabad, Telangana, India",
-    "link": "https://in.linkedin.com/jobs/view/business-analyst-general-insurance-regulatory-finance-accounting-at-capgemini-4395659892",
-    "source": "LinkedIn",
-    "salary_text": "",
-    "jd": "Business Analyst General Insurance Regulatory, Finance & Accounting at Capgemini. Senior Product Manager Hyderabad.",
-    "posted": "Today",
-    "isNew": true,
-    "scraped_at": "2026-03-31",
-    "salary_lpa": null,
-    "salary_display": "Not Listed",
-    "score": 59,
-    "score_breakdown": {
-      "salary": 50,
-      "role": 65,
-      "skills": 39,
-      "workex": 95
-    },
-    "matched_skills": [
-      "Product Management",
-      "Technical Account Management"
-    ],
-    "is_watchlist": false,
-    "tier": "na"
-  },
-  {
     "id": "87dbaf0d9844",
     "title": "Senior Product Engineering Manager",
     "company": "Deloitte",
@@ -3026,6 +2970,34 @@
     "matched_skills": [
       "Product Management",
       "Prompt Engineering"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "d38dea062456",
+    "title": "Business Analyst General Insurance Regulatory, Finance & Accounting",
+    "company": "Capgemini",
+    "location": "Hyderabad, Telangana, India",
+    "link": "https://in.linkedin.com/jobs/view/business-analyst-general-insurance-regulatory-finance-accounting-at-capgemini-4395659892",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Business Analyst General Insurance Regulatory, Finance & Accounting at Capgemini. Senior Product Manager Hyderabad.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 59,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 39,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Product Management",
+      "Technical Account Management"
     ],
     "is_watchlist": false,
     "tier": "na"
@@ -3334,6 +3306,34 @@
     "matched_skills": [
       "Product Management",
       "Fintech"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "73b45326aab9",
+    "title": "Technical Project Manager III",
+    "company": "JPMorganChase",
+    "location": "Mumbai, Maharashtra, India",
+    "link": "https://in.linkedin.com/jobs/view/technical-project-manager-iii-at-jpmorganchase-4392997187",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Technical Project Manager III at JPMorganChase. Technical Program Manager Mumbai.",
+    "posted": "Today",
+    "isNew": false,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 59,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 39,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Program Management",
+      "Technical Account Management"
     ],
     "is_watchlist": false,
     "tier": "na"
@@ -4809,6 +4809,34 @@
     "tier": "na"
   },
   {
+    "id": "df8d5a221fb6",
+    "title": "Technical Project Manager-Node.js",
+    "company": "NTT DATA North America",
+    "location": "Bengaluru East, Karnataka, India",
+    "link": "https://in.linkedin.com/jobs/view/technical-project-manager-node-js-at-ntt-data-north-america-4393958043",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Technical Project Manager-Node.js at NTT DATA North America. Technical Program Manager remote India.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 57,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 39,
+      "workex": 80
+    },
+    "matched_skills": [
+      "Program Management",
+      "Technical Account Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
     "id": "30a635487ecb",
     "title": "Technical Project Manager/ Project Coordinator",
     "company": "Codewinglet Private Limited",
@@ -5125,6 +5153,33 @@
     "source": "LinkedIn",
     "salary_text": "",
     "jd": "AI Product Owner / Business Analyst (Full time with the Fortune 500 Company's) at HARP. Senior Product Manager Bangalore.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 55,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 19,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Product Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "4f4eacb6786e",
+    "title": "Product, Senior Manager",
+    "company": "Availity",
+    "location": "Bengaluru, Karnataka, India",
+    "link": "https://in.linkedin.com/jobs/view/product-senior-manager-at-availity-4393558846",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Product, Senior Manager at Availity. Senior Product Manager Bangalore.",
     "posted": "Today",
     "isNew": true,
     "scraped_at": "2026-03-31",
@@ -5549,6 +5604,33 @@
     "tier": "na"
   },
   {
+    "id": "1fd90de0ca01",
+    "title": "Senior Product Associate - Card Authorizations",
+    "company": "JPMorganChase",
+    "location": "Mumbai, Maharashtra, India",
+    "link": "https://in.linkedin.com/jobs/view/senior-product-associate-card-authorizations-at-jpmorganchase-4393933759",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Senior Product Associate - Card Authorizations at JPMorganChase. Senior Product Manager Mumbai.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 55,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 19,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Product Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
     "id": "82ac4c52dcaf",
     "title": "Senior Key Account Manager",
     "company": "Logitech",
@@ -5638,33 +5720,6 @@
     "source": "LinkedIn",
     "salary_text": "",
     "jd": "Product Owner at Endava. Senior Product Manager Hyderabad.",
-    "posted": "Today",
-    "isNew": true,
-    "scraped_at": "2026-03-31",
-    "salary_lpa": null,
-    "salary_display": "Not Listed",
-    "score": 55,
-    "score_breakdown": {
-      "salary": 50,
-      "role": 65,
-      "skills": 19,
-      "workex": 95
-    },
-    "matched_skills": [
-      "Product Management"
-    ],
-    "is_watchlist": false,
-    "tier": "na"
-  },
-  {
-    "id": "7e3b1719a385",
-    "title": "Senior Product Associate",
-    "company": "JPMorganChase",
-    "location": "Hyderabad, Telangana, India",
-    "link": "https://in.linkedin.com/jobs/view/senior-product-associate-at-jpmorganchase-4392981692",
-    "source": "LinkedIn",
-    "salary_text": "",
-    "jd": "Senior Product Associate at JPMorganChase. Senior Product Manager Hyderabad.",
     "posted": "Today",
     "isNew": true,
     "scraped_at": "2026-03-31",
@@ -5976,6 +6031,33 @@
     },
     "matched_skills": [
       "Technical Account Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "7e3b1719a385",
+    "title": "Senior Product Associate",
+    "company": "JPMorganChase",
+    "location": "Hyderabad, Telangana, India",
+    "link": "https://in.linkedin.com/jobs/view/senior-product-associate-at-jpmorganchase-4392981692",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Senior Product Associate at JPMorganChase. Senior Product Manager Hyderabad.",
+    "posted": "Today",
+    "isNew": false,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 55,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 19,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Product Management"
     ],
     "is_watchlist": false,
     "tier": "na"
@@ -7328,6 +7410,33 @@
     "tier": "na"
   },
   {
+    "id": "29cbb0b08510",
+    "title": "Key Account Manager - Abrasives Systems Division - Hyderabad",
+    "company": "3M",
+    "location": "Secunderābād, Telangana, India",
+    "link": "https://in.linkedin.com/jobs/view/key-account-manager-abrasives-systems-division-hyderabad-at-3m-4396160414",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Key Account Manager - Abrasives Systems Division - Hyderabad at 3M. Technical Account Manager India.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 53,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 19,
+      "workex": 80
+    },
+    "matched_skills": [
+      "Technical Account Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
     "id": "15885c7450e5",
     "title": "Key Account Manager- Pharma",
     "company": "IQVIA",
@@ -7364,7 +7473,7 @@
     "salary_text": "",
     "jd": "Manager - Technical Support at Cloudflare. Technical Account Manager India.",
     "posted": "Today",
-    "isNew": true,
+    "isNew": false,
     "scraped_at": "2026-03-31",
     "salary_lpa": null,
     "salary_display": "Not Listed",
@@ -8309,6 +8418,33 @@
     "source": "LinkedIn",
     "salary_text": "",
     "jd": "AVP, IAM User Reconciliation Product Owner (L11) at Synchrony. Senior Product Manager Hyderabad.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 49,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 65,
+      "skills": 19,
+      "workex": 55
+    },
+    "matched_skills": [
+      "Product Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "f2b11387b99a",
+    "title": "AVP, IAM Role Based Access Control Product Owner",
+    "company": "Synchrony",
+    "location": "Hyderabad, Telangana, India",
+    "link": "https://in.linkedin.com/jobs/view/avp-iam-role-based-access-control-product-owner-at-synchrony-4392148411",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "AVP, IAM Role Based Access Control Product Owner at Synchrony. Senior Product Manager Hyderabad.",
     "posted": "Today",
     "isNew": true,
     "scraped_at": "2026-03-31",
@@ -9845,33 +9981,6 @@
     "tier": "na"
   },
   {
-    "id": "1d7fadc6464f",
-    "title": "Business Analyst",
-    "company": "SANeForce",
-    "location": "Chennai, Tamil Nadu, India",
-    "link": "https://in.linkedin.com/jobs/view/business-analyst-at-saneforce-4393919992",
-    "source": "LinkedIn",
-    "salary_text": "",
-    "jd": "Business Analyst at SANeForce. Senior Product Manager Chennai.",
-    "posted": "Today",
-    "isNew": true,
-    "scraped_at": "2026-03-31",
-    "salary_lpa": null,
-    "salary_display": "Not Listed",
-    "score": 43,
-    "score_breakdown": {
-      "salary": 50,
-      "role": 25,
-      "skills": 19,
-      "workex": 95
-    },
-    "matched_skills": [
-      "Product Management"
-    ],
-    "is_watchlist": false,
-    "tier": "na"
-  },
-  {
     "id": "3bafd06d3d59",
     "title": "BUSINESS ANALYST L4",
     "company": "Wipro",
@@ -9899,6 +10008,33 @@
     "tier": "na"
   },
   {
+    "id": "1d7fadc6464f",
+    "title": "Business Analyst",
+    "company": "SANeForce",
+    "location": "Chennai, Tamil Nadu, India",
+    "link": "https://in.linkedin.com/jobs/view/business-analyst-at-saneforce-4393919992",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Business Analyst at SANeForce. Senior Product Manager Chennai.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 43,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 25,
+      "skills": 19,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Product Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
     "id": "d6a339745817",
     "title": "Application Support SME / Business Analyst",
     "company": "Inchcape Shipping Services",
@@ -9907,6 +10043,33 @@
     "source": "LinkedIn",
     "salary_text": "",
     "jd": "Application Support SME / Business Analyst at Inchcape Shipping Services. Senior Product Manager Chennai.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 43,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 25,
+      "skills": 19,
+      "workex": 95
+    },
+    "matched_skills": [
+      "Product Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "edc8a530633b",
+    "title": "Business Analyst",
+    "company": "Gratia",
+    "location": "India",
+    "link": "https://in.linkedin.com/jobs/view/business-analyst-at-gratia-4393928974",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Business Analyst at Gratia. Senior Product Manager remote India.",
     "posted": "Today",
     "isNew": true,
     "scraped_at": "2026-03-31",
@@ -10043,7 +10206,7 @@
     "salary_text": "",
     "jd": "SpendHound Data Administrator at YipitData. Senior Product Manager remote India.",
     "posted": "Today",
-    "isNew": true,
+    "isNew": false,
     "scraped_at": "2026-03-31",
     "salary_lpa": null,
     "salary_display": "Not Listed",
@@ -10520,33 +10683,6 @@
     "tier": "na"
   },
   {
-    "id": "a49eecc47bc0",
-    "title": "AI Solution Architect",
-    "company": "Amazon Web Services (AWS)",
-    "location": "Mumbai, Maharashtra, India",
-    "link": "https://in.linkedin.com/jobs/view/ai-solution-architect-at-amazon-web-services-aws-4392963037",
-    "source": "LinkedIn",
-    "salary_text": "",
-    "jd": "AI Solution Architect at Amazon Web Services (AWS). Technical Account Manager Mumbai.",
-    "posted": "Today",
-    "isNew": true,
-    "scraped_at": "2026-03-31",
-    "salary_lpa": null,
-    "salary_display": "Not Listed",
-    "score": 41,
-    "score_breakdown": {
-      "salary": 50,
-      "role": 25,
-      "skills": 19,
-      "workex": 80
-    },
-    "matched_skills": [
-      "Technical Account Management"
-    ],
-    "is_watchlist": false,
-    "tier": "na"
-  },
-  {
     "id": "79c99eec4a57",
     "title": "Sales Engineer, West",
     "company": "TrendAI",
@@ -10822,6 +10958,33 @@
     "company": "IAssess Consultants LLP",
     "location": "Mumbai Metropolitan Region",
     "link": "https://in.linkedin.com/jobs/view/sales-engineer-construction-infrastructure-projects-pr-at-iassess-consultants-llp-4392169595",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "Sales Engineer-Construction / Infrastructure Projects-PR at IAssess Consultants LLP. Technical Account Manager Mumbai.",
+    "posted": "Today",
+    "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 41,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 25,
+      "skills": 19,
+      "workex": 80
+    },
+    "matched_skills": [
+      "Technical Account Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "e333afb5052d",
+    "title": "Sales Engineer-Construction / Infrastructure Projects-PR",
+    "company": "IAssess Consultants LLP",
+    "location": "Thane, Maharashtra, India",
+    "link": "https://in.linkedin.com/jobs/view/sales-engineer-construction-infrastructure-projects-pr-at-iassess-consultants-llp-4392156820",
     "source": "LinkedIn",
     "salary_text": "",
     "jd": "Sales Engineer-Construction / Infrastructure Projects-PR at IAssess Consultants LLP. Technical Account Manager Mumbai.",
@@ -11182,6 +11345,33 @@
     "jd": "Regional Solutions Architect, Tech Solutions (APAC) at Igloo. Technical Account Manager India.",
     "posted": "Today",
     "isNew": true,
+    "scraped_at": "2026-03-31",
+    "salary_lpa": null,
+    "salary_display": "Not Listed",
+    "score": 41,
+    "score_breakdown": {
+      "salary": 50,
+      "role": 25,
+      "skills": 19,
+      "workex": 80
+    },
+    "matched_skills": [
+      "Technical Account Management"
+    ],
+    "is_watchlist": false,
+    "tier": "na"
+  },
+  {
+    "id": "a49eecc47bc0",
+    "title": "AI Solution Architect",
+    "company": "Amazon Web Services (AWS)",
+    "location": "Mumbai, Maharashtra, India",
+    "link": "https://in.linkedin.com/jobs/view/ai-solution-architect-at-amazon-web-services-aws-4392963037",
+    "source": "LinkedIn",
+    "salary_text": "",
+    "jd": "AI Solution Architect at Amazon Web Services (AWS). Technical Account Manager Mumbai.",
+    "posted": "Today",
+    "isNew": false,
     "scraped_at": "2026-03-31",
     "salary_lpa": null,
     "salary_display": "Not Listed",
