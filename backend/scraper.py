@@ -133,6 +133,16 @@ async def scrape_linkedin(page, query: str) -> list[dict]:
                 if not title or is_blocked(title):
                     continue
 
+                # Clean LinkedIn URL — keep only the job ID part
+                if link and "linkedin.com/jobs" in link:
+                    # Extract job ID from URL like /jobs/view/1234567890/
+                    import re as _re
+                    m = _re.search(r"/jobs/view/(\d+)", link)
+                    if m:
+                        link = f"https://www.linkedin.com/jobs/view/{m.group(1)}/"
+                    else:
+                        link = link.split("?")[0]  # remove tracking params
+
                 jid = job_id(title, company, location)
                 jobs.append({
                     "id": jid, "title": title, "company": company,
@@ -186,6 +196,13 @@ async def scrape_naukri(page, query: str) -> list[dict]:
                 if not title or is_blocked(title):
                     continue
 
+                # Ensure Naukri link is absolute
+                if link and link.startswith("/"):
+                    link = "https://www.naukri.com" + link
+                # Remove tracking params
+                if link and "?" in link:
+                    link = link.split("?")[0]
+
                 jid = job_id(title, company, loc)
                 jobs.append({
                     "id": jid, "title": title, "company": company,
@@ -236,8 +253,13 @@ async def scrape_iimjobs(page, query: str) -> list[dict]:
                 if not title or is_blocked(title):
                     continue
 
-                if link and not link.startswith("http"):
+                if link and link.startswith("/"):
                     link = "https://www.iimjobs.com" + link
+                elif link and not link.startswith("http"):
+                    link = "https://www.iimjobs.com/" + link
+                # Remove tracking params
+                if link and "?" in link:
+                    link = link.split("?")[0]
 
                 jid = job_id(title, company, loc)
                 jobs.append({
@@ -292,9 +314,21 @@ async def scrape_company_page(page, company: str, url: str) -> list[dict]:
                 if not job_like:
                     continue
 
-                if href and not href.startswith("http"):
+                # Make relative URLs absolute
+                if href and href.startswith("/"):
                     base = "/".join(url.split("/")[:3])
                     href = base + href
+                elif href and not href.startswith("http"):
+                    base = "/".join(url.split("/")[:3])
+                    href = base + "/" + href
+
+                # Skip anchor-only or empty links
+                if not href or href.startswith("#") or href == url:
+                    continue
+
+                # Remove tracking params
+                if "?" in href:
+                    href = href.split("?")[0]
 
                 jid = job_id(text, company, "India")
                 jobs.append({

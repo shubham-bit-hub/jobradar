@@ -187,19 +187,189 @@ const scoreColor = (s, t) => s >= 75 ? t.green : s >= 50 ? t.accent : s >= 30 ? 
 const scoreBg    = (s, t) => s >= 75 ? (t === DARK ? "#062a18" : "#d4f5e8") : s >= 50 ? (t === DARK ? "#061828" : "#ddeeff") : s >= 30 ? (t === DARK ? "#2a1800" : "#fff3cc") : (t === DARK ? "#280808" : "#fde8e8");
 const scoreLabel = s => s >= 75 ? "Top Match" : s >= 50 ? "Good Match" : s >= 30 ? "Partial" : "Low Fit";
 
-async function callClaude(prompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.content[0].text;
+// ─────────────────────────────────────────────────────────────────────────────
+// TEMPLATE-BASED GENERATORS (no API key required)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function generateCoverLetter(job, baseCv) {
+  const name = "Shubham Garg";
+  const title = job.title;
+  const company = job.company;
+  const skills = job.skills || [];
+
+  // Extract key achievements from CV
+  const achievements = [
+    "led SmartConnect API adoption across 5+ enterprise integrators at Amazon",
+    "delivered USD 5.2M annual savings through operational excellence",
+    "built Gen-AI tooling that reduced support resolution time by 40%",
+    "automated 46,000+ operational workflows with 95% accuracy",
+    "drove 1M+ shipments with +1 day speed improvement via TCAP program",
+  ];
+
+  // Match skills to role
+  const mySkills = SHUBHAM_SKILLS.map(s => s.toLowerCase());
+  const matched = skills.filter(s => mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms)));
+  const skillStr = matched.length > 0 ? matched.slice(0,3).join(", ") : skills.slice(0,3).join(", ");
+
+  // Role type detection
+  const tl = title.toLowerCase();
+  const isTAM = tl.includes("account") || tl.includes("tam");
+  const isTPM = tl.includes("technical program") || tl.includes("tpm");
+  const isPM  = tl.includes("product manager") || tl.includes("pm");
+
+  const para1 = `I am writing to express my interest in the ${title} role at ${company}. With five years of experience in API integration, program management, and enterprise partnerships — including my current role as Program Manager II at Amazon — I bring a proven track record of driving technical adoption and measurable business outcomes.`;
+
+  const para2 = isTAM
+    ? `At Amazon, I have managed end-to-end technical relationships with enterprise integrators on the SmartConnect API, owning SLAs, escalation management, and partner health. I ${achievements[0]} and ${achievements[2]}. My experience maps directly to the ${skillStr} requirements of this role.`
+    : isTPM
+    ? `In my current role, I ${achievements[0]}, ${achievements[3]}, and ${achievements[1]}. I have consistently bridged technical and business teams to deliver complex API and platform programs on time. My background in ${skillStr} aligns closely with what ${company} is looking for in this role.`
+    : `I have a strong foundation in ${skillStr}, demonstrated through my work at Amazon where I ${achievements[0]} and ${achievements[1]}. My MBA from MDI Gurgaon combined with hands-on product and operations experience positions me well for this role at ${company}.`;
+
+  const para3 = `I am excited by ${company}'s focus and believe my combination of technical depth, stakeholder management, and execution track record would make an immediate impact. I would welcome the opportunity to discuss how I can contribute to your team.`;
+
+  return `${para1}
+
+${para2}
+
+${para3}
+
+Best regards,
+${name}`;
+}
+
+function generateTailoredCV(job, baseCv) {
+  const skills = job.skills || [];
+  const mySkills = SHUBHAM_SKILLS.map(s => s.toLowerCase());
+  const matched = skills.filter(s => mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms)));
+  const missing = skills.filter(s => !mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms)));
+  const skillHighlight = [...matched, ...missing].join(" | ");
+
+  return `<h1 style="margin:0 0 4px;font-size:16pt">Shubham Garg</h1>
+<p class="contact" style="color:#555;font-size:10pt;margin:0 0 16px">garg.shubham21@gmail.com &nbsp;|&nbsp; +91-9643566485 &nbsp;|&nbsp; Bangalore, India &nbsp;|&nbsp; linkedin.com/in/shubhamgarg</p>
+
+<h2 style="font-size:12pt;border-bottom:1.5px solid #333;margin:0 0 8px;padding-bottom:4px">PROFESSIONAL SUMMARY</h2>
+<p style="margin:0 0 16px;line-height:1.6">Results-driven Program Manager II at Amazon with 5 years of experience in <strong>${matched.slice(0,3).join(", ")}</strong> and enterprise partnerships. Led SmartConnect API adoption across 5+ integrators, delivered USD 5.2M annual savings, and built Gen-AI tooling reducing escalations by 40%. MBA from MDI Gurgaon. Targeting ${job.title} roles.</p>
+
+<h2 style="font-size:12pt;border-bottom:1.5px solid #333;margin:16px 0 8px;padding-bottom:4px">EXPERIENCE</h2>
+<p style="margin:0 0 4px"><strong>Program Manager II – API Integration | Amazon</strong> &nbsp;|&nbsp; Oct 2024 – Present</p>
+<ul style="padding-left:22px;margin:4px 0 12px">
+<li>Led end-to-end onboarding of 5+ enterprise integrators onto SmartConnect API, owning SLAs, escalations, and partner health scorecards</li>
+<li>Built Gen-AI troubleshooting tool reducing support resolution time by 40%; automated 46,000+ operational emails</li>
+<li>Redesigned integrator scorecard into multi-pillar framework (API Quality, Business Impact, Integration Hygiene, Seller Health)</li>
+<li>Built SQL deduplication pipeline across 250k+ records with 95% accuracy; earned Game Changer Award Q4'25</li>
+</ul>
+<p style="margin:0 0 4px"><strong>Program Manager – Last Mile Delivery | Amazon</strong> &nbsp;|&nbsp; Jun 2022 – Sep 2024</p>
+<ul style="padding-left:22px;margin:4px 0 12px">
+<li>Drove TCAP initiative delivering 1M+ shipments with +1 day speed improvement across India network</li>
+<li>Delivered USD 5.2M annual savings through supply chain optimisation and cross-functional program execution</li>
+<li>Managed logistics, tech, and seller workstreams simultaneously; earned Customer Advocate Award Q3'23</li>
+</ul>
+<p style="margin:0 0 4px"><strong>Probationary Officer | Punjab National Bank</strong> &nbsp;|&nbsp; 2018 – 2020</p>
+<ul style="padding-left:22px;margin:4px 0 12px">
+<li>Managed retail banking operations, client onboarding, and branch-level reporting</li>
+</ul>
+
+<h2 style="font-size:12pt;border-bottom:1.5px solid #333;margin:16px 0 8px;padding-bottom:4px">EDUCATION</h2>
+<p style="margin:0 0 4px"><strong>PGDM (MBA)</strong> | Management Development Institute (MDI), Gurgaon | 2020–2022</p>
+<p style="margin:0 0 12px"><strong>BA (H) Business Economics</strong> | Shivaji College, Delhi University | 2015–2018</p>
+
+<h2 style="font-size:12pt;border-bottom:1.5px solid #333;margin:16px 0 8px;padding-bottom:4px">KEY SKILLS</h2>
+<p style="margin:0">${skillHighlight}</p>`;
+}
+
+function generateSkillGap(job) {
+  const mySkills = SHUBHAM_SKILLS.map(s => s.toLowerCase());
+  const jobSkills = job.skills || [];
+
+  const matchingSkills = jobSkills.filter(s =>
+    mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms))
+  );
+  const missingSkills = jobSkills.filter(s =>
+    !mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms))
+  );
+
+  // Static learning resources by skill type
+  const learningMap = {
+    "product sense":    { course:"Product Management Fundamentals",  platform:"Coursera",          weeks:4, link:"https://www.coursera.org/learn/product-management" },
+    "prd":              { course:"Writing PRDs that Ship",            platform:"LinkedIn Learning",  weeks:2, link:"https://www.linkedin.com/learning/topics/product-management" },
+    "rest api":         { course:"REST APIs with Postman",            platform:"Udemy",             weeks:2, link:"https://www.udemy.com/course/rest-api-flask-and-python/" },
+    "cloud":            { course:"Google Cloud Fundamentals",         platform:"Google",            weeks:3, link:"https://cloud.google.com/training/courses/cloud-digital-leader" },
+    "fintech":          { course:"Fintech: Disruption in Finance",    platform:"Coursera",          weeks:3, link:"https://www.coursera.org/learn/fintech" },
+    "growth":           { course:"Growth Product Management",         platform:"LinkedIn Learning",  weeks:2, link:"https://www.linkedin.com/learning/topics/product-management" },
+    "developer tools":  { course:"Developer Experience Fundamentals", platform:"Udemy",             weeks:2, link:"https://www.udemy.com/courses/development/" },
+    "default":          { course:"Product Strategy and Roadmapping",  platform:"Coursera",          weeks:3, link:"https://www.coursera.org/learn/product-strategy" },
+  };
+
+  const getLearning = (skill) => {
+    const sl = skill.toLowerCase();
+    for (const [key, val] of Object.entries(learningMap)) {
+      if (sl.includes(key)) return { skill, ...val };
+    }
+    return { skill, ...learningMap["default"] };
+  };
+
+  const missingWithImportance = missingSkills.map((s, i) => ({
+    skill: s,
+    importance: i === 0 ? "High" : i <= 1 ? "Medium" : "Low",
+    description: `${s} is listed as a requirement for this ${job.title} role at ${job.company}.`
+  }));
+
+  const gapCount = missingSkills.length;
+  const gapRating = gapCount === 0 ? "Low" : gapCount <= 2 ? "Low" : gapCount <= 4 ? "Medium" : "High";
+
+  const assessment = matchingSkills.length >= jobSkills.length * 0.7
+    ? `Strong match — you cover ${matchingSkills.length} of ${jobSkills.length} required skills. Your API integration background and program management experience at Amazon directly align with this ${job.title} role at ${job.company}. Minor gaps can be addressed quickly.`
+    : matchingSkills.length >= jobSkills.length * 0.4
+    ? `Good partial match — you have ${matchingSkills.length} of ${jobSkills.length} skills. Your Amazon experience in API integration and stakeholder management is a strong foundation. Bridging ${missingSkills.slice(0,2).join(" and ")} would significantly strengthen your application.`
+    : `Stretch role — you match ${matchingSkills.length} of ${jobSkills.length} skills. Your program management and API background are relevant but you would need to demonstrate strength in ${missingSkills.slice(0,2).join(" and ")} during interviews.`;
+
+  return {
+    matchingSkills,
+    missingSkills: missingWithImportance,
+    assessment,
+    gapRating,
+    learningPlan: missingSkills.slice(0, 4).map(getLearning)
+  };
+}
+
+function generateInterviewPrep(job) {
+  const tl = job.title.toLowerCase();
+  const isTAM = tl.includes("account");
+  const isTPM = tl.includes("technical program") || tl.includes("tpm");
+  const company = job.company;
+  const skills = (job.skills || []).slice(0, 3).join(", ");
+
+  const pmQuestions = [
+    { question: `How would you define the product roadmap for ${company}'s API platform?`,
+      answer: `I'd start by mapping the developer journey — from discovery to integration to scale. At Amazon, I built a similar framework for SmartConnect API where I identified three phases: onboarding friction, integration quality, and business impact. For ${company}, I'd conduct 5-7 developer interviews, analyse drop-off in the funnel, and prioritise the top 3 pain points. I'd then build a roadmap with 30/60/90 day milestones, aligning with engineering capacity and business OKRs. Success metrics would include time-to-first-call, integration completion rate, and API adoption growth.` },
+    { question: `Tell me about a time you drove adoption of a technical product.`,
+      answer: `At Amazon, I led SmartConnect API adoption across 5+ enterprise integrators. The challenge was low activation — partners would sign up but not complete integration. I diagnosed three root causes: unclear documentation, no sandbox environment, and slow support SLAs. I fixed documentation, worked with engineering to create a sandbox, and built a Gen-AI troubleshooting tool that reduced resolution time by 40%. Adoption increased significantly within two quarters and I earned the Game Changer Award for this initiative.` },
+    { question: `How do you prioritise when you have competing stakeholder requests?`,
+      answer: `I use a framework combining impact, effort, and strategic alignment. First I map each request to a business metric — revenue, retention, or efficiency. Then I score effort using engineering estimates. Finally I check alignment with the quarterly OKR. At Amazon, I regularly managed competing asks from sellers, tech teams, and business stakeholders. I maintained a shared prioritisation doc that made trade-offs visible and reduced escalations by keeping everyone aligned on the rationale, not just the decision.` },
+    { question: `How would you measure the success of an API integration program?`,
+      answer: `I'd define success across four dimensions: adoption (number of active integrators, API call volume), quality (error rates, latency, uptime), business impact (seller/merchant revenue influenced), and partner health (NPS, support ticket volume). At Amazon I built a multi-pillar scorecard tracking exactly these — API Quality, Business Impact, Integration Hygiene, and Seller Health. The key is having leading indicators like activation rate alongside lagging ones like revenue impact, so you can act before problems compound.` },
+    { question: `What's your approach to working with engineering teams as a PM/PM?`,
+      answer: `I treat engineers as partners not executors. I write clear PRD-style briefs with context, success metrics, and constraints — not solutions. I run weekly syncs focused on blockers, not status. At Amazon, I introduced a simple "red/amber/green" flag system where engineers could surface concerns early without escalating formally. This reduced last-minute surprises by around 60%. I also make a habit of joining sprint planning to understand technical debt and capacity, which makes my roadmap estimates much more realistic.` },
+    { question: `Tell me about a data-driven decision you made.`,
+      answer: `At Amazon, I noticed integrator churn was high despite good onboarding scores. I pulled SQL data across 250,000+ seller records and found that integrators with fewer than 3 API calls in week 1 had 4x higher churn rate within 30 days. I built an early warning trigger — any integrator below the threshold received a proactive outreach. This improved 30-day activation by 30%. The insight came entirely from data, not intuition, and it's now a standard part of the integrator health scorecard.` },
+    { question: `Why ${company}? Why this role specifically?`,
+      answer: `${company} operates at a scale and domain that directly matches my background in ${skills}. My work at Amazon on API integrations and enterprise partnerships has given me a strong foundation, but I'm looking to apply these skills in a more product-focused environment. This ${job.title} role sits at the intersection of technical depth and business impact — which is exactly where I do my best work. I'm particularly excited about the opportunity to shape how partners and developers experience ${company}'s platform.` },
+    { question: `How do you handle a situation where a key stakeholder disagrees with your recommendation?`,
+      answer: `I first make sure I fully understand their concern — often disagreement comes from different information sets, not different goals. I then present my data and reasoning transparently and ask them to point out any gaps. If we still disagree, I propose a time-bound experiment to test both approaches and let results decide. At Amazon, I used this approach when a business stakeholder wanted to deprioritise API quality metrics in favour of volume. I ran a 6-week test showing quality correlated with 3x higher long-term adoption. They became one of the strongest advocates for the quality framework after that.` },
+  ];
+
+  const tamQuestions = [
+    { question: `How do you build trust with a technical enterprise customer?`,
+      answer: `Trust comes from reliability and honesty. In my first 30 days with any enterprise partner at Amazon, I focused on three things: deep discovery to understand their technical environment, a written alignment document on success metrics, and a clear SLA commitment. I never promised what I couldn't deliver. When issues arose, I communicated proactively — even bad news early is better than good news late. This approach led to strong NPS scores and several partners specifically requesting me for their accounts.` },
+    { question: `Walk me through how you would onboard a new enterprise integration partner.`,
+      answer: `I follow a structured 4-stage process: Discovery (understand their tech stack, use case, and success definition), Technical Kickoff (API walkthrough, sandbox access, documentation review), Integration Support (weekly check-ins, dedicated Slack channel, escalation path), and Go-Live (acceptance testing, SLA sign-off, health scorecard setup). At Amazon I built this framework from scratch for SmartConnect API and reduced average time-to-integration from 45 to 18 days.` },
+    ...pmQuestions.slice(2, 6),
+  ];
+
+  const questions = isTAM ? tamQuestions : pmQuestions;
+  const context = `Focus on demonstrating your API integration depth, stakeholder management at enterprise scale, and your track record of measurable impact at Amazon. ${company} will likely probe on ${skills} — prepare specific examples from SmartConnect API and TCAP.`;
+
+  return { context, questions: questions.slice(0, 8) };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -408,14 +578,14 @@ function DetailPanel({ job, status, jobState, onApply, onGenerateCV, onSkillGap,
       {/* Action Buttons */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:10 }}>
         {[
-          { label: jobState?.loadingApply ? "⏳ Generating..." : status !== "Not Applied" ? `✅ ${status} — Reapply` : "🚀 One-Click Apply",
-            primary:true, loading:jobState?.loadingApply, onClick:()=>onApply(job) },
-          { label: jobState?.loadingCV ? "⏳ Building CV..." : "📄 Download Tailored CV",
-            loading:jobState?.loadingCV, onClick:()=>onGenerateCV(job) },
-          { label: jobState?.loadingGap ? "⏳ Analysing..." : "🎯 Skill Gap",
-            loading:jobState?.loadingGap, onClick:()=>onSkillGap(job) },
-          { label: jobState?.loadingPrep ? "⏳ Preparing..." : "🎤 Interview Prep",
-            loading:jobState?.loadingPrep, onClick:()=>onInterviewPrep(job) },
+          { label: status !== "Not Applied" ? `✅ ${status} — Reapply` : "🚀 One-Click Apply",
+            primary:true, loading:false, onClick:()=>onApply(job) },
+          { label: "📄 Download Tailored CV",
+            loading:false, onClick:()=>onGenerateCV(job) },
+          { label: "🎯 Skill Gap",
+            loading:false, onClick:()=>onSkillGap(job) },
+          { label: "🎤 Interview Prep",
+            loading:false, onClick:()=>onInterviewPrep(job) },
         ].map((btn, i) => (
           <button key={i} onClick={btn.onClick} disabled={btn.loading} style={{
             background: btn.primary ? "linear-gradient(135deg,#1060e0,#0090e0)" : t.surface3,
@@ -659,6 +829,7 @@ function SettingsModal({ settings, setSettings, onClose, t }) {
   });
   const [newRole, setNewRole] = useState("");
   const [newCo,   setNewCo]   = useState("");
+  const [newLoc,  setNewLoc]  = useState("");
   const [resetConfirm, setResetConfirm] = useState(false);
   const totalW = Object.values(d.weights).reduce((a,b)=>a+b,0);
   const wOk    = totalW === 100;
@@ -777,7 +948,7 @@ function SettingsModal({ settings, setSettings, onClose, t }) {
             <Inp value={newRole} onChange={e=>setNewRole(e.target.value)} placeholder="Add role and press Enter…"
               onKeyDown={e=>{if(e.key==="Enter"&&newRole.trim()){setD(p=>({...p,targetRoles:[...p.targetRoles,newRole.trim()]}));setNewRole("");}}} />
             <button onClick={()=>{if(newRole.trim()){setD(p=>({...p,targetRoles:[...p.targetRoles,newRole.trim()]}));setNewRole("");}}}
-              style={{ background:t.surface3, color:t.accent, border:`1px solid ${t.border}`, borderRadius:8, padding:"0 16px", cursor:"pointer", fontSize:13, fontFamily:"'Sora',sans-serif", whiteSpace:"nowrap" }}>Add</button>
+              type="button" style={{ background:t.surface3, color:t.accent, border:`1px solid ${t.border}`, borderRadius:8, padding:"0 16px", cursor:"pointer", fontSize:13, fontFamily:"'Sora',sans-serif", whiteSpace:"nowrap" }}>Add</button>
           </div>
         </Section>
 
@@ -792,7 +963,7 @@ function SettingsModal({ settings, setSettings, onClose, t }) {
             <Inp value={newCo} onChange={e=>setNewCo(e.target.value)} placeholder="Add company…"
               onKeyDown={e=>{if(e.key==="Enter"&&newCo.trim()){setD(p=>({...p,targetCompanies:[...p.targetCompanies,newCo.trim()]}));setNewCo("");}}} />
             <button onClick={()=>{if(newCo.trim()){setD(p=>({...p,targetCompanies:[...p.targetCompanies,newCo.trim()]}));setNewCo("");}}}
-              style={{ background:t.surface3, color:t.accent, border:`1px solid ${t.border}`, borderRadius:8, padding:"0 16px", cursor:"pointer", fontSize:13, fontFamily:"'Sora',sans-serif", whiteSpace:"nowrap" }}>Add</button>
+              type="button" style={{ background:t.surface3, color:t.accent, border:`1px solid ${t.border}`, borderRadius:8, padding:"0 16px", cursor:"pointer", fontSize:13, fontFamily:"'Sora',sans-serif", whiteSpace:"nowrap" }}>Add</button>
           </div>
         </Section>
 
@@ -939,58 +1110,32 @@ export default function JobRadar() {
   const na = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>j.salary===null)), [scoredJobs,applyFiltersAndSort]);
   const applied = scoredJobs.filter(j=>jobStatuses[j.id]?.status!=="Not Applied");
 
-  const handleApply = async job => {
-    patchDetail(job.id,{loadingApply:true});
-    try {
-      const coverLetter = await callClaude(
-        `Write a tailored cover letter for ${job.title} at ${job.company}.\n\nJob Description: ${job.jd}\n\nCandidate Profile:\n${settings.baseCv.substring(0,700)}\n\nWrite exactly 3 focused paragraphs, max 170 words total. Be specific about how this candidate's experience maps to this exact role. Start directly — no "Dear Hiring Manager". Confident, crisp, non-generic.`
-      );
-      window.open(job.link,"_blank");
-      updateStatus(job.id,"Applied");
-      setApplyModal({job,coverLetter});
-    } catch(e) { alert("Claude API error: "+e.message); }
-    patchDetail(job.id,{loadingApply:false});
+  const handleApply = job => {
+    const coverLetter = generateCoverLetter(job, settings.baseCv);
+    window.open(job.link, "_blank");
+    updateStatus(job.id, "Applied");
+    setApplyModal({ job, coverLetter });
   };
 
-  const handleGenerateCV = async job => {
-    patchDetail(job.id,{loadingCV:true});
-    try {
-      const cvHtml = await callClaude(
-        `Tailor this CV for ${job.title} at ${job.company}.\n\nJD keywords to integrate: ${job.skills.join(", ")}\nJob Description: ${job.jd}\n\nBase CV:\n${settings.baseCv}\n\nReturn ONLY clean HTML with inline styles. Professional Word-compatible format. Include: name + contact header, a punchy 2-sentence summary using JD keywords, experience bullets reordered with most relevant first, education, skills. No markdown, no backticks — just raw HTML.`
-      );
-      const full = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:1in;color:#111;max-width:720px}h1{font-size:16pt;margin:0 0 4px}h2{font-size:12pt;border-bottom:1.5px solid #333;margin:18px 0 8px;padding-bottom:4px}p,li{margin:4px 0;line-height:1.5}ul{padding-left:22px;margin:6px 0}</style></head><body>${cvHtml}</body></html>`;
-      const blob = new Blob(["\ufeff",full],{type:"application/msword"});
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href=url; a.download=`Shubham_Garg_CV_${job.company}.doc`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch(e) { alert("Claude API error: "+e.message); }
-    patchDetail(job.id,{loadingCV:false});
+  const handleGenerateCV = job => {
+    const cvHtml = generateTailoredCV(job, settings.baseCv);
+    const full = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:1in;color:#111;max-width:720px}h1{font-size:16pt;margin:0 0 4px}h2{font-size:12pt;border-bottom:1.5px solid #333;margin:18px 0 8px;padding-bottom:4px}p,li{margin:4px 0;line-height:1.5}ul{padding-left:22px;margin:6px 0}</style></head><body>${cvHtml}</body></html>`;
+    const blob = new Blob(["﻿", full], { type: "application/msword" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href = url; a.download = `Shubham_Garg_CV_${job.company}.doc`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
-  const handleSkillGap = async job => {
-    patchDetail(job.id,{loadingGap:true,skillGap:null});
-    try {
-      const raw = await callClaude(
-        `Analyse skill gap. Return ONLY valid JSON, no markdown:\n{"matchingSkills":["skill"],"missingSkills":[{"skill":"name","importance":"High","description":"why"}],"assessment":"2-3 sentence honest assessment","gapRating":"Low","learningPlan":[{"skill":"name","course":"exact title","platform":"Coursera","weeks":3,"link":"https://coursera.org/learn/example"}]}\n\nJob: ${job.title} at ${job.company}\nRequired: ${job.skills.join(", ")}\nJD: ${job.jd}\nCandidate: ${SHUBHAM_SKILLS.join(", ")}\nBackground: ${settings.baseCv.substring(0,400)}`
-      );
-      const gap = JSON.parse(raw.replace(/```json\n?|```\n?/g,"").trim());
-      patchDetail(job.id,{skillGap:gap});
-    } catch(e) { alert("Could not parse AI response. Please retry."); }
-    patchDetail(job.id,{loadingGap:false});
+  const handleSkillGap = job => {
+    const gap = generateSkillGap(job);
+    patchDetail(job.id, { skillGap: gap });
   };
 
-  const handleInterviewPrep = async job => {
-    patchDetail(job.id,{loadingPrep:true,interviewPrep:null});
-    try {
-      const raw = await callClaude(
-        `Generate interview prep for ${job.title} at ${job.company}. Return ONLY valid JSON, no markdown:\n{"context":"2-sentence overview of what to focus on","questions":[{"question":"specific interview question","answer":"model answer tailored to candidate background, 100-130 words, uses STAR where relevant"}]}\n\nGenerate 8 questions covering: product sense, technical/API knowledge, program management, stakeholder handling, and role-specific scenarios.\n\nJD: ${job.jd}\nCandidate: ${settings.baseCv.substring(0,600)}`
-      );
-      const prep = JSON.parse(raw.replace(/```json\n?|```\n?/g,"").trim());
-      patchDetail(job.id,{interviewPrep:prep});
-    } catch(e) { alert("Could not parse AI response. Please retry."); }
-    patchDetail(job.id,{loadingPrep:false});
+  const handleInterviewPrep = job => {
+    const prep = generateInterviewPrep(job);
+    patchDetail(job.id, { interviewPrep: prep });
   };
 
   const tabs = [

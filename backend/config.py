@@ -64,11 +64,16 @@ TITLE_BLOCKLIST = [
 
 # ── LinkedIn search queries ────────────────────────────────────────
 LINKEDIN_QUERIES = [
+    "Senior Product Manager India",
+    "Technical Program Manager India",
+    "Technical Account Manager India",
+    "Senior Program Manager API India",
+    "Product Operations Manager India",
     "Senior Product Manager Bangalore",
     "Technical Program Manager Bangalore",
     "Technical Account Manager Bangalore",
-    "Senior Program Manager API Bangalore",
-    "Product Operations Manager Bangalore",
+    "Senior Product Manager remote India",
+    "Tech Ops Manager India",
 ]
 
 # ── Naukri search queries ─────────────────────────────────────────
@@ -77,13 +82,20 @@ NAUKRI_QUERIES = [
     "Technical Program Manager",
     "Technical Account Manager",
     "Senior Program Manager",
+    "Product Manager API",
+    "Technical Account Manager API",
+    "Product Operations Manager",
+    "Program Manager product",
 ]
 
 # ── IIMJobs search queries ────────────────────────────────────────
 IIMJOBS_QUERIES = [
-    "Senior Product Manager Bangalore",
-    "Technical Account Manager Bangalore",
-    "Program Manager API Bangalore",
+    "Senior Product Manager",
+    "Technical Account Manager",
+    "Program Manager API",
+    "Technical Program Manager",
+    "Product Manager fintech",
+    "Senior Program Manager",
 ]
 
 # ── Company career page URLs ──────────────────────────────────────
@@ -105,5 +117,5 @@ COMPANY_CAREER_PAGES = {
 }
 
 # ── Output paths ──────────────────────────────────────────────────
-JOBS_OUTPUT_PATH = "../public/jobs.json"
-LOG_PATH         = "../logs/scraper.log"
+JOBS_OUTPUT_PATH = "public/jobs.json"
+LOG_PATH         = "logs/scraper.log"
