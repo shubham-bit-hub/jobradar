@@ -78,16 +78,19 @@ async def human_delay(min_s=1.5, max_s=3.5):
 def load_existing_jobs() -> dict:
     """Load previously scraped jobs keyed by job_id."""
     if os.path.exists(JOBS_OUTPUT_PATH):
-        with open(JOBS_OUTPUT_PATH) as f:
-            jobs = json.load(f)
-            return {j["id"]: j for j in jobs}
+        with open(JOBS_OUTPUT_PATH, encoding="utf-8", errors="ignore") as f:
+            try:
+                jobs = json.load(f)
+                return {j["id"]: j for j in jobs}
+            except Exception:
+                return {}
     return {}
 
 
 def save_jobs(jobs: list[dict]) -> None:
-    with open(JOBS_OUTPUT_PATH, "w") as f:
+    with open(JOBS_OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(jobs, f, indent=2, ensure_ascii=False)
-    logger.info(f"Saved {len(jobs)} jobs → {JOBS_OUTPUT_PATH}")
+    logger.info(f"Saved {len(jobs)} jobs to {JOBS_OUTPUT_PATH}")
 
 
 # ── LinkedIn Scraper ──────────────────────────────────────────────
