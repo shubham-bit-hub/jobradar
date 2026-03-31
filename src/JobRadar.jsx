@@ -155,10 +155,10 @@ function estimateExp(title, company) {
 function extractSkillsFromJD(jd, title) {
   const text = ((jd||"") + " " + (title||"")).toLowerCase();
   const found = new Set();
-  for (const [kw, canonical] of SKILLS_TAXONOMY) {
-    if (text.includes(kw)) found.add(canonical);
-  }
-  return [...found];
+  SKILLS_TAXONOMY.forEach(function(pair) {
+    if (text.includes(pair[0])) found.add(pair[1]);
+  });
+  return Array.from(found);
 }
 
 function extractExpFromJD(jd) {
