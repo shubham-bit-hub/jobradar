@@ -1,0 +1,75 @@
+2026-03-31 16:13:06,638  INFO      ============================================================
+2026-03-31 16:13:06,638  INFO      JobRadar scrape started — 2026-03-31 16:13
+2026-03-31 16:13:06,638  INFO      ============================================================
+2026-03-31 16:13:07,393  INFO      LinkedIn → Senior Product Manager Bangalore
+2026-03-31 16:13:16,606  INFO      LinkedIn [Senior Product Manager Bangalore] → 24 jobs
+2026-03-31 16:13:22,968  INFO      LinkedIn → Technical Program Manager Bangalore
+2026-03-31 16:13:30,676  INFO      LinkedIn [Technical Program Manager Bangalore] → 12 jobs
+2026-03-31 16:13:38,013  INFO      LinkedIn → Technical Account Manager Bangalore
+2026-03-31 16:13:48,249  INFO      LinkedIn [Technical Account Manager Bangalore] → 25 jobs
+2026-03-31 16:13:52,858  INFO      LinkedIn → Senior Program Manager API Bangalore
+2026-03-31 16:14:00,241  INFO      LinkedIn [Senior Program Manager API Bangalore] → 0 jobs
+2026-03-31 16:14:04,452  INFO      LinkedIn → Product Operations Manager Bangalore
+2026-03-31 16:14:13,073  INFO      LinkedIn [Product Operations Manager Bangalore] → 22 jobs
+2026-03-31 16:14:20,981  INFO      Naukri → Senior Product Manager
+2026-03-31 16:14:25,366  INFO      Naukri [Senior Product Manager] → 0 jobs
+2026-03-31 16:14:30,748  INFO      Naukri → Technical Program Manager
+2026-03-31 16:14:33,911  INFO      Naukri [Technical Program Manager] → 0 jobs
+2026-03-31 16:14:39,675  INFO      Naukri → Technical Account Manager
+2026-03-31 16:14:42,984  INFO      Naukri [Technical Account Manager] → 0 jobs
+2026-03-31 16:14:49,648  INFO      Naukri → Senior Program Manager
+2026-03-31 16:14:53,443  INFO      Naukri [Senior Program Manager] → 0 jobs
+2026-03-31 16:14:57,552  INFO      IIMJobs → Senior Product Manager Bangalore
+2026-03-31 16:15:02,831  INFO      IIMJobs [Senior Product Manager Bangalore] → 0 jobs
+2026-03-31 16:15:06,653  INFO      IIMJobs → Technical Account Manager Bangalore
+2026-03-31 16:15:11,772  INFO      IIMJobs [Technical Account Manager Bangalore] → 0 jobs
+2026-03-31 16:15:14,786  INFO      IIMJobs → Program Manager API Bangalore
+2026-03-31 16:15:19,484  INFO      IIMJobs [Program Manager API Bangalore] → 0 jobs
+2026-03-31 16:15:24,430  INFO      Company page → Flipkart
+2026-03-31 16:15:24,681  ERROR     Company page error (Flipkart): Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.flipkartcareers.com/#!/joblist
+Call log:
+  - navigating to "https://www.flipkartcareers.com/#!/joblist", waiting until "load"
+
+2026-03-31 16:15:24,682  INFO      Company [Flipkart] → 0 jobs
+2026-03-31 16:15:29,843  INFO      Company page → Google
+2026-03-31 16:15:35,805  INFO      Company [Google] → 0 jobs
+2026-03-31 16:15:41,032  INFO      Company page → Stripe
+2026-03-31 16:15:48,435  INFO      Company [Stripe] → 15 jobs
+2026-03-31 16:15:54,102  INFO      Company page → Adobe
+2026-03-31 16:16:00,975  INFO      Company [Adobe] → 5 jobs
+2026-03-31 16:16:06,643  INFO      Company page → Salesforce
+2026-03-31 16:16:14,588  INFO      Company [Salesforce] → 15 jobs
+2026-03-31 16:16:17,922  INFO      Company page → Atlassian
+2026-03-31 16:16:28,049  INFO      Company [Atlassian] → 3 jobs
+2026-03-31 16:16:33,611  INFO      Company page → Meesho
+2026-03-31 16:16:51,049  INFO      Company [Meesho] → 2 jobs
+2026-03-31 16:16:54,822  INFO      Company page → Razorpay
+2026-03-31 16:16:59,842  INFO      Company [Razorpay] → 5 jobs
+2026-03-31 16:17:03,608  INFO      Company page → PhonePe
+2026-03-31 16:17:12,348  INFO      Company [PhonePe] → 5 jobs
+2026-03-31 16:17:16,866  INFO      Company page → Uber
+2026-03-31 16:17:23,377  INFO      Company [Uber] → 2 jobs
+2026-03-31 16:17:27,975  INFO      Company page → Swiggy
+2026-03-31 16:17:34,675  INFO      Company [Swiggy] → 1 jobs
+2026-03-31 16:17:39,480  INFO      Company page → Microsoft
+2026-03-31 16:17:46,079  INFO      Company [Microsoft] → 0 jobs
+2026-03-31 16:17:50,449  INFO      Company page → Zomato
+2026-03-31 16:17:50,614  ERROR     Company page error (Zomato): Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.zomato.com/careers
+Call log:
+  - navigating to "https://www.zomato.com/careers", waiting until "load"
+
+2026-03-31 16:17:50,615  INFO      Company [Zomato] → 0 jobs
+2026-03-31 16:17:54,626  INFO      Company page → PayPal
+2026-03-31 16:17:54,685  ERROR     Company page error (PayPal): Page.goto: net::ERR_NAME_NOT_RESOLVED at https://jobs.paypal.com/en/search#q=product%20manager&location=Bangalore
+Call log:
+  - navigating to "https://jobs.paypal.com/en/search#q=product%20manager&location=Bangalore", waiting until "load"
+
+2026-03-31 16:17:54,686  INFO      Company [PayPal] → 0 jobs
+2026-03-31 16:17:58,958  INFO      Raw scraped: 136  →  Unique: 118
+2026-03-31 16:17:58,963  INFO      New jobs since last run: 2
+2026-03-31 16:17:58,966  INFO      Saved 122 jobs to /home/runner/work/jobradar/jobradar/public/jobs.json
+2026-03-31 16:17:58,966  INFO      No new jobs above alert threshold — no WhatsApp sent.
+2026-03-31 16:17:58,966  INFO      ------------------------------------------------------------
+2026-03-31 16:17:58,966  INFO      DONE  |  Total: 122  |  50+LPA: 0  |  40-50LPA: 0  |  N/A: 122
+2026-03-31 16:17:58,966  INFO            |  Top score: 74  (Operations Analyst (Resource Management) @ Salesforce)
+2026-03-31 16:17:58,966  INFO      ------------------------------------------------------------
