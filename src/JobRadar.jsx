@@ -456,14 +456,6 @@ function generateTailoredCV(job, baseCv) {
 <p style="margin:0">${skillHighlight}</p>`;
 }
 
-const SHUBHAM_CANONICAL = new Set([
-  "API Integration","Product Management","Program Management","SQL",
-  "Prompt Engineering","Automation","Process Optimization","Stakeholder Management",
-  "Technical Account Management","Gen-AI","Last-Mile Delivery","Seller Management",
-  "Data Analysis","Go-To-Market","SaaS","Python","Fintech","E-commerce",
-  "Cross-functional Leadership","Enterprise","Logistics","Supply Chain","B2B",
-]);
-
 function generateSkillGap(job) {
   const mySkills = SHUBHAM_SKILLS.map(s => s.toLowerCase());
   const jobSkills = Array.isArray(job.skills) ? job.skills : [];
