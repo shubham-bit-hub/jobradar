@@ -21,14 +21,26 @@ from playwright.async_api import async_playwright, TimeoutError as PWTimeout
 from config import (
     LINKEDIN_QUERIES, NAUKRI_QUERIES, IIMJOBS_QUERIES,
     COMPANY_CAREER_PAGES, TITLE_BLOCKLIST,
-    JOBS_OUTPUT_PATH, LOG_PATH,
 )
+
+# Paths resolved after BASE_DIR is set below
+import config as _cfg
 from scorer import compute_score
 from notifier import notify_new_top_jobs
 
+# ── Resolve paths relative to script location ────────────────────
+_BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
+_ROOT_DIR   = os.path.dirname(_BASE_DIR)
+_LOGS_DIR   = os.path.join(_ROOT_DIR, "logs")
+_PUBLIC_DIR = os.path.join(_ROOT_DIR, "public")
+os.makedirs(_LOGS_DIR,   exist_ok=True)
+os.makedirs(_PUBLIC_DIR, exist_ok=True)
+
+# Override config paths with absolute paths
+LOG_PATH         = os.path.join(_LOGS_DIR,   "scraper.log")
+JOBS_OUTPUT_PATH = os.path.join(_PUBLIC_DIR, "jobs.json")
+
 # ── Logging ───────────────────────────────────────────────────────
-os.makedirs("logs", exist_ok=True)
-os.makedirs("public", exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
