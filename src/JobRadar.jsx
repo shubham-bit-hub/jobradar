@@ -157,32 +157,52 @@ const MOCK_JOBS = [
 function computeScore(job, settings) {
   const { weights, salaryBuckets } = settings;
   const mySkills = SHUBHAM_SKILLS.map(s => s.toLowerCase());
+  
+  // Guard: salary_lpa from scraper OR salary field from mock data
+  const salaryVal = job.salary_lpa !== undefined ? job.salary_lpa : job.salary;
+  
   let sal = 50;
-  if (job.salary !== null) {
-    if (job.salary >= salaryBuckets.tier1) sal = 100;
-    else if (job.salary >= salaryBuckets.tier2) sal = 72;
+  if (salaryVal !== null && salaryVal !== undefined) {
+    if (salaryVal >= salaryBuckets.tier1) sal = 100;
+    else if (salaryVal >= salaryBuckets.tier2) sal = 72;
     else sal = 35;
   }
-  const tl = job.title.toLowerCase();
+  
+  const tl = (job.title || "").toLowerCase();
   const exact = settings.targetRoles.some(r => tl.includes(r.toLowerCase()));
   const partial = !exact && settings.targetRoles.some(r =>
     r.toLowerCase().split(" ").some(w => w.length > 4 && tl.includes(w))
   );
   const role = exact ? 100 : partial ? 65 : 30;
-  const matched = job.skills.filter(s =>
-    mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms))
-  ).length;
-  const skills = Math.min(100, Math.round((matched / Math.max(job.skills.length, 1)) * 100));
-  const wx = job.levelMatch === "Right" ? 95 : job.levelMatch === "Senior" ? 75 : 50;
+  
+  // Guard: skills may be missing in scraped jobs
+  const jobSkills = Array.isArray(job.skills) ? job.skills : [];
+  const jdText = (job.jd || job.title || "").toLowerCase();
+  
+  // If no skills array, match against JD text instead
+  let matched = 0;
+  if (jobSkills.length > 0) {
+    matched = jobSkills.filter(s =>
+      mySkills.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms))
+    ).length;
+  } else {
+    matched = mySkills.filter(ms => jdText.includes(ms)).length;
+  }
+  const skillBase = jobSkills.length > 0 ? jobSkills.length : Math.max(mySkills.length * 0.3, 1);
+  const skills = Math.min(100, Math.round((matched / skillBase) * 100));
+  
+  // levelMatch may not exist in scraped jobs — default to Right
+  const wx = job.levelMatch === "Right" || !job.levelMatch ? 95 : job.levelMatch === "Senior" ? 75 : 50;
+  
   const total = Math.round(
     sal    * (weights.salary  / 100) +
     role   * (weights.role    / 100) +
     skills * (weights.skills  / 100) +
     wx     * (weights.workex  / 100)
   );
-  // +5 bonus for watchlist companies (same as backend scorer)
+  
   const isWatchlist = settings.targetCompanies.some(c =>
-    job.company?.toLowerCase().includes(c.toLowerCase())
+    (job.company || "").toLowerCase().includes(c.toLowerCase())
   );
   const finalTotal = Math.min(100, isWatchlist ? total + 5 : total);
   return { total: finalTotal, sal, role, skills, wx, matched, isWatchlist };
@@ -541,7 +561,7 @@ function DetailPanel({ job, status, jobState, onApply, onGenerateCV, onSkillGap,
           <div style={{ marginTop:14 }}>
             <div style={{ fontSize:11, color:t.textMuted, textTransform:"uppercase", letterSpacing:1, marginBottom:8, fontWeight:700 }}>Required Skills</div>
             <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-              {job.skills.map(s => {
+              {(Array.isArray(job.skills) ? job.skills : []).map(s => {
                 const myS = SHUBHAM_SKILLS.map(x=>x.toLowerCase());
                 const match = myS.some(ms => ms.includes(s.toLowerCase()) || s.toLowerCase().includes(ms));
                 return (
@@ -706,7 +726,7 @@ function JobTable({ jobs, jobStatuses, expandedId, setExpandedId, updateStatus, 
                   <div style={{ fontSize:13, fontWeight:600, color:t.text, marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{job.title}</div>
                   <div style={{ fontSize:11, color:t.textDim }}>
                     <span style={{ color:t.accent, fontWeight:500 }}>{job.company}</span>
-                    {job.score?.isWatchlist && <span style={{ marginLeft:4, fontSize:10, background:t.amber+"22", color:t.amber, border:`1px solid ${t.amber}44`, borderRadius:4, padding:"1px 5px", fontWeight:700 }}>★ Watchlist</span>}
+                    {job.score?.isWatchlist && job.company && <span style={{ marginLeft:4, fontSize:10, background:t.amber+"22", color:t.amber, border:`1px solid ${t.amber}44`, borderRadius:4, padding:"1px 5px", fontWeight:700 }}>★ Watchlist</span>}
                     <span style={{ margin:"0 5px" }}>·</span>{job.source}
                     <span style={{ margin:"0 5px" }}>·</span>{job.posted}
                     {jState?.note && <span style={{ marginLeft:6, color:t.amber }}>📝</span>}
@@ -715,8 +735,8 @@ function JobTable({ jobs, jobStatuses, expandedId, setExpandedId, updateStatus, 
 
                 <div style={{ display:"flex", alignItems:"center", fontSize:12, color:t.textDim }}>{job.location}</div>
 
-                <div style={{ display:"flex", alignItems:"center", fontSize:12, fontFamily:"'IBM Plex Mono',monospace", color:job.salary ? t.text : t.textMuted }}>
-                  {job.salaryDisplay}
+                <div style={{ display:"flex", alignItems:"center", fontSize:12, fontFamily:"'IBM Plex Mono',monospace", color:(job.salary||job.salary_lpa) ? t.text : t.textMuted }}>
+                  {job.salary_display || job.salaryDisplay || "Not Listed"}
                 </div>
 
                 <div style={{ display:"flex", alignItems:"center" }}>
@@ -727,14 +747,14 @@ function JobTable({ jobs, jobStatuses, expandedId, setExpandedId, updateStatus, 
                   }}>{job.levelMatch}</span>
                 </div>
 
-                <div style={{ display:"flex", alignItems:"center" }}><ScoreBar score={sc.skills} t={t} /></div>
+                <div style={{ display:"flex", alignItems:"center" }}><ScoreBar score={sc?.skills??0} t={t} /></div>
 
                 <div style={{ display:"flex", alignItems:"center" }}>
-                  <div style={{ background:scoreBg(sc.total,t), border:`1px solid ${scoreColor(sc.total,t)}30`, borderRadius:8, padding:"4px 10px", display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ background:scoreBg(sc?.total??0,t), border:`1px solid ${scoreColor(sc?.total??0,t)}30`, borderRadius:8, padding:"4px 10px", display:"flex", alignItems:"center", gap:8 }}>
                     <div style={{ width:40, height:4, background:t.border, borderRadius:4, overflow:"hidden" }}>
-                      <div style={{ width:`${sc.total}%`, height:4, background:scoreColor(sc.total,t), borderRadius:4 }} />
+                      <div style={{ width:`${sc?.total??0}%`, height:4, background:scoreColor(sc?.total??0,t), borderRadius:4 }} />
                     </div>
-                    <span style={{ fontSize:13, fontWeight:800, color:scoreColor(sc.total,t), fontFamily:"'IBM Plex Mono',monospace" }}>{sc.total}</span>
+                    <span style={{ fontSize:13, fontWeight:800, color:scoreColor(sc?.total??0,t), fontFamily:"'IBM Plex Mono',monospace" }}>{sc?.total??0}</span>
                   </div>
                 </div>
 
@@ -1153,32 +1173,40 @@ export default function JobRadar() {
     if (search.trim()) {
       const q = search.toLowerCase();
       out = out.filter(j =>
-        j.title.toLowerCase().includes(q) ||
-        j.company.toLowerCase().includes(q) ||
-        j.skills.some(s=>s.toLowerCase().includes(q))
+        (j.title||"").toLowerCase().includes(q) ||
+        (j.company||"").toLowerCase().includes(q) ||
+        (j.jd||"").toLowerCase().includes(q) ||
+        (Array.isArray(j.skills) && j.skills.some(s=>s.toLowerCase().includes(q)))
       );
     }
     if (sourceFilter.length > 0) out = out.filter(j=>sourceFilter.includes(j.source));
     // Salary range filter — only apply if user has moved the sliders
     if (salaryRange[0] > 0 || salaryRange[1] < 200) {
       out = out.filter(j => {
-        if (j.salary === null) return salaryRange[1] >= 200; // show N/A jobs only if max is uncapped
-        return j.salary >= salaryRange[0] && j.salary <= salaryRange[1];
+        const s = j.salary_lpa !== undefined ? j.salary_lpa : j.salary;
+        if (s === null || s === undefined) return salaryRange[1] >= 200;
+        return s >= salaryRange[0] && s <= salaryRange[1];
       });
     }
     out.sort((a,b) => {
-      if (sortBy === "score")   return b.score.total - a.score.total;
-      if (sortBy === "salary")  return (b.salary||0) - (a.salary||0);
-      if (sortBy === "company") return a.company.localeCompare(b.company);
-      if (sortBy === "newest")  return a.posted.localeCompare(b.posted);
+      const aScore = a.score?.total ?? (typeof a.score === "number" ? a.score : 0);
+      const bScore = b.score?.total ?? (typeof b.score === "number" ? b.score : 0);
+      if (sortBy === "score")   return bScore - aScore;
+      const aSal = a.salary_lpa ?? a.salary ?? 0;
+      const bSal = b.salary_lpa ?? b.salary ?? 0;
+      if (sortBy === "salary")  return bSal - aSal;
+      if (sortBy === "company") return (a.company||"").localeCompare(b.company||"");
+      if (sortBy === "newest")  return (a.posted||"").localeCompare(b.posted||"");
       return 0;
     });
     return out;
   }, [search, sourceFilter, sortBy, salaryRange]);
 
-  const t1 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>j.salary!==null && j.salary>=settings.salaryBuckets.tier1)),   [scoredJobs,applyFiltersAndSort,settings]);
-  const t2 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>j.salary!==null && j.salary>=settings.salaryBuckets.tier2 && j.salary<settings.salaryBuckets.tier1)), [scoredJobs,applyFiltersAndSort,settings]);
-  const na = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>j.salary===null)), [scoredJobs,applyFiltersAndSort]);
+  // Support both mock (salary) and scraped (salary_lpa) fields
+  const getSalary = j => j.salary_lpa !== undefined ? j.salary_lpa : j.salary;
+  const t1 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)!==null && getSalary(j)!==undefined && getSalary(j)>=settings.salaryBuckets.tier1)),   [scoredJobs,applyFiltersAndSort,settings]);
+  const t2 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)!==null && getSalary(j)!==undefined && getSalary(j)>=settings.salaryBuckets.tier2 && getSalary(j)<settings.salaryBuckets.tier1)), [scoredJobs,applyFiltersAndSort,settings]);
+  const na = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)===null || getSalary(j)===undefined)), [scoredJobs,applyFiltersAndSort]);
   const applied = scoredJobs.filter(j=>jobStatuses[j.id]?.status!=="Not Applied");
 
   const handleApply = job => {
@@ -1253,7 +1281,7 @@ export default function JobRadar() {
 
           <div style={{ display:"flex", alignItems:"center", gap:16 }}>
             <div style={{ fontSize:13, display:"flex", gap:18 }}>
-              <span><span style={{ color:t.green, fontWeight:800, fontFamily:"'IBM Plex Mono',monospace" }}>{t1.filter(j=>j.score.total>=75).length}</span> <span style={{ color:t.textMuted }}>top matches</span></span>
+              <span><span style={{ color:t.green, fontWeight:800, fontFamily:"'IBM Plex Mono',monospace" }}>{t1.filter(j=>(j.score?.total??0)>=75).length}</span> <span style={{ color:t.textMuted }}>top matches</span></span>
               <span><span style={{ color:t.accent, fontWeight:800, fontFamily:"'IBM Plex Mono',monospace" }}>{applied.length}</span> <span style={{ color:t.textMuted }}>in pipeline</span></span>
               <span><span style={{ color:t.purple, fontWeight:800, fontFamily:"'IBM Plex Mono',monospace" }}>{applied.filter(j=>jobStatuses[j.id]?.status==="Interview Scheduled").length}</span> <span style={{ color:t.textMuted }}>interviews</span></span>
             </div>
