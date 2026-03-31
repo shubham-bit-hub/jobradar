@@ -1116,7 +1116,7 @@ export default function JobRadar() {
   // ── Fetch real jobs from scraper output ─────────────────────────
   useEffect(() => {
     setJobsLoading(true);
-    fetch("/jobs.json?t=" + Date.now())
+    fetch("./jobs.json?t=" + Date.now())
       .then(r => {
         if (!r.ok) throw new Error("jobs.json not found");
         return r.json();
