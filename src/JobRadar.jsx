@@ -735,7 +735,9 @@ function JobTable({ jobs, jobStatuses, expandedId, setExpandedId, updateStatus, 
 
                 <div style={{ display:"flex", alignItems:"center", fontSize:12, color:t.textDim }}>{job.location}</div>
 
-                <div style={{ display:"flex", alignItems:"center", fontSize:12, fontFamily:"'IBM Plex Mono',monospace", color:(job.salary||job.salary_lpa) ? t.text : t.textMuted }}>
+                <div style={{ display:"flex", alignItems:"center", fontSize:12, fontFamily:"'IBM Plex Mono',monospace",
+                  color: job.salary_lpa ? t.text : job.salary_estimated ? t.amber : t.textMuted,
+                  title: job.salary_estimated ? "Estimated from market data — not stated by employer" : "" }}>
                   {job.salary_display || job.salaryDisplay || "Not Listed"}
                 </div>
 
@@ -1180,11 +1182,10 @@ export default function JobRadar() {
       );
     }
     if (sourceFilter.length > 0) out = out.filter(j=>sourceFilter.includes(j.source));
-    // Salary range filter — only apply if user has moved the sliders
+    // Salary range filter — uses estimated salary if stated not available
     if (salaryRange[0] > 0 || salaryRange[1] < 200) {
       out = out.filter(j => {
-        const s = j.salary_lpa !== undefined ? j.salary_lpa : j.salary;
-        if (s === null || s === undefined) return salaryRange[1] >= 200;
+        const s = j.salary_est_value ?? j.salary_lpa ?? j.salary ?? 0;
         return s >= salaryRange[0] && s <= salaryRange[1];
       });
     }
@@ -1192,8 +1193,8 @@ export default function JobRadar() {
       const aScore = a.score?.total ?? (typeof a.score === "number" ? a.score : 0);
       const bScore = b.score?.total ?? (typeof b.score === "number" ? b.score : 0);
       if (sortBy === "score")   return bScore - aScore;
-      const aSal = a.salary_lpa ?? a.salary ?? 0;
-      const bSal = b.salary_lpa ?? b.salary ?? 0;
+      const aSal = a.salary_est_value ?? a.salary_lpa ?? a.salary ?? 0;
+      const bSal = b.salary_est_value ?? b.salary_lpa ?? b.salary ?? 0;
       if (sortBy === "salary")  return bSal - aSal;
       if (sortBy === "company") return (a.company||"").localeCompare(b.company||"");
       if (sortBy === "newest")  return (a.posted||"").localeCompare(b.posted||"");
@@ -1202,11 +1203,13 @@ export default function JobRadar() {
     return out;
   }, [search, sourceFilter, sortBy, salaryRange]);
 
-  // Support both mock (salary) and scraped (salary_lpa) fields
-  const getSalary = j => j.salary_lpa !== undefined ? j.salary_lpa : j.salary;
-  const t1 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)!==null && getSalary(j)!==undefined && getSalary(j)>=settings.salaryBuckets.tier1)),   [scoredJobs,applyFiltersAndSort,settings]);
-  const t2 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)!==null && getSalary(j)!==undefined && getSalary(j)>=settings.salaryBuckets.tier2 && getSalary(j)<settings.salaryBuckets.tier1)), [scoredJobs,applyFiltersAndSort,settings]);
-  const na = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)===null || getSalary(j)===undefined)), [scoredJobs,applyFiltersAndSort]);
+  // salary_est_value is always populated (stated or estimated from market data)
+  // salary_lpa is null if not stated (estimated only)
+  const getSalary  = j => j.salary_est_value ?? j.salary_lpa ?? j.salary ?? 0;
+  const hasStated  = j => j.salary_lpa !== null && j.salary_lpa !== undefined;
+  const t1 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)>=settings.salaryBuckets.tier1)),   [scoredJobs,applyFiltersAndSort,settings]);
+  const t2 = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)>=settings.salaryBuckets.tier2 && getSalary(j)<settings.salaryBuckets.tier1)), [scoredJobs,applyFiltersAndSort,settings]);
+  const na = useMemo(()=>applyFiltersAndSort(scoredJobs.filter(j=>getSalary(j)<settings.salaryBuckets.tier2)), [scoredJobs,applyFiltersAndSort]);
   const applied = scoredJobs.filter(j=>jobStatuses[j.id]?.status!=="Not Applied");
 
   const handleApply = job => {
@@ -1240,7 +1243,7 @@ export default function JobRadar() {
   const tabs = [
     { id:"tier1",   label:`🟢 ${settings.salaryBuckets.tier1}+ LPA`,                                       count:t1.length,      color:t.green  },
     { id:"tier2",   label:`🔵 ${settings.salaryBuckets.tier2}–${settings.salaryBuckets.tier1} LPA`,         count:t2.length,      color:t.accent },
-    { id:"na",      label:"⚪ Salary N/A",                                                                   count:na.length,      color:t.textDim},
+    { id:"na",      label:`⚪ Under ${settings.salaryBuckets.tier2} LPA`,                                   count:na.length,      color:t.textDim},
     { id:"tracker", label:"📋 Tracker",                                                                      count:applied.length, color:t.purple },
   ];
 
